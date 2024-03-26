@@ -4,7 +4,8 @@ public class PlayerPickAndDrop : MonoBehaviour
 {
     public static PlayerPickAndDrop Instance;
 
-    private ObjectGrabbling currentObjectGrabbling;
+    public ObjectGrabbling currentObjectGrabbling;
+    public ObjectType inHandObjType;
 
     [Header("Interaction Settings")] [SerializeField]
     private GameObject interactionPanel;
@@ -12,6 +13,8 @@ public class PlayerPickAndDrop : MonoBehaviour
     [SerializeField] private GameObject areaFullPanel;
     [SerializeField] private LayerMask pickableLayer;
     [SerializeField] private LayerMask placeableLayer;
+    [SerializeField] private LayerMask saleableLayer;
+    
     [SerializeField] private Transform objectGrabPointTransform;
 
 

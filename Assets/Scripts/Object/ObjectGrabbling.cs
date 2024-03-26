@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ObjectGrabbling : MonoBehaviour
 {
+    public ObjectType thisObjType;
     private Rigidbody rb;
     [SerializeField] private Transform objectGrabPointTransform;
     private Collider collider;
@@ -23,7 +24,9 @@ public class ObjectGrabbling : MonoBehaviour
             this.rb.isKinematic = true;
             this.collider.enabled = false;
             this.transform.parent = null;
+            PlayerPickAndDrop.Instance.inHandObjType = this.thisObjType;
             ObjectSorting.Instance.RemoveItem(this.gameObject);
+            print(this.thisObjType);
         }
         else
         {
@@ -32,6 +35,8 @@ public class ObjectGrabbling : MonoBehaviour
             this.rb.useGravity = false;
             this.rb.isKinematic = true;
             this.collider.enabled = false;
+            PlayerPickAndDrop.Instance.inHandObjType = this.thisObjType;
+            print(this.thisObjType);
         }
         
     }
@@ -41,6 +46,7 @@ public class ObjectGrabbling : MonoBehaviour
         this.rb.isKinematic = false;
         this.collider.enabled = true;
         this.objectGrabPointTransform = null;
+        PlayerPickAndDrop.Instance.inHandObjType = ObjectType.Null;
         PlayerPickAndDrop.Instance.InHand = false;
     }
 
@@ -54,6 +60,7 @@ public class ObjectGrabbling : MonoBehaviour
         this.collider.enabled = true;
         this.wasPlaced = true;
         PlayerPickAndDrop.Instance.InHand = false;
+        PlayerPickAndDrop.Instance.inHandObjType = ObjectType.Null;
         ObjectSorting.Instance.AddItem(this.gameObject);
     }
 

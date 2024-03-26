@@ -128,8 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f719e87fbadcd841b8588bf428ccb00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  thisObjType: 2
   objectGrabPointTransform: {fileID: 0}
-  wasPlaced: 0
 --- !u!114 &6549634083356991886
 MonoBehaviour:
   m_ObjectHideFlags: 0

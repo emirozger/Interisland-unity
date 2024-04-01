@@ -45,20 +45,9 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (other.gameObject.CompareTag("Ground"))
-        {
-            Debug.Log("trigger exit");
-            inSeaCamera.SetActive(false);
-            this.characterController.enabled = true;
-            GameObject.FindObjectOfType<CameraController>().enabled = true;
-            this.GetComponent<BuoyantObject>().enabled = false;
-            rb.isKinematic = true;
-            inSea = false;
-        }
         if (other.gameObject.CompareTag("Sea"))
         {
             Debug.Log("trigger enter");
-            other.gameObject.tag="oldSea";
             inSeaCamera.SetActive(true);
             this.characterController.enabled = false;
             GameObject.FindObjectOfType<CameraController>().enabled = false;

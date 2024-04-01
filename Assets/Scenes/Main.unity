@@ -495,7 +495,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &49570381
 RectTransform:
   m_ObjectHideFlags: 0
@@ -691,7 +691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CompassImage: {fileID: 515264119}
-  orientation: {fileID: 1457567489}
+  orientation: {fileID: 543450652014171524}
   CompassDirectionText: {fileID: 311638964}
 --- !u!64 &103684158
 MeshCollider:
@@ -1009,7 +1009,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &214654529
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1653,6 +1653,75 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -6425778970187207352, guid: 3053e95ee232a154f921316273b7a5d8, type: 3}
+--- !u!1001 &425294185
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067515859759737850, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1924298491312384589, guid: f3de8751df0501940833aade7a36eb56,
+        type: 3}
+      propertyPath: m_Name
+      value: UI Animation Controller
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f3de8751df0501940833aade7a36eb56, type: 3}
 --- !u!64 &443959961
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2070,6 +2139,43 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: -21.47, z: 0}
+--- !u!84 &560440736
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WaterDepthMap
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1024
+  m_Height: 1024
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 92
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!64 &565920589
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2239,7 +2345,7 @@ PrefabInstance:
     - target: {fileID: 2715538678601240842, guid: 33cb49dda0f0c7446987d1cc1744d8b9,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5418155402617453516, guid: 33cb49dda0f0c7446987d1cc1744d8b9,
         type: 3}
@@ -2519,7 +2625,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &726166324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4429,7 +4535,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1236511425
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5404,7 +5510,7 @@ PrefabInstance:
     - target: {fileID: 3732965502371162942, guid: 76f6a4ba786528f4595b7b65d5047a03,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3732965502371162942, guid: 76f6a4ba786528f4595b7b65d5047a03,
         type: 3}
@@ -6147,6 +6253,75 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5593411210459920444, guid: 3053e95ee232a154f921316273b7a5d8, type: 3}
+--- !u!1001 &1567539391
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5668091615064276798, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Islands
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 518.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -14.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 51.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280033022155860523, guid: da6f3e9163fe31b41bb3ff192eec1f2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: da6f3e9163fe31b41bb3ff192eec1f2e, type: 3}
 --- !u!1 &1572147492
 GameObject:
   m_ObjectHideFlags: 0
@@ -7879,7 +8054,7 @@ GameObject:
   - component: {fileID: 1985579929}
   - component: {fileID: 1985579933}
   m_Layer: 0
-  m_Name: MinimapController
+  m_Name: MinimapControllerCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7941,11 +8116,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
+  near clip plane: -51
+  far clip plane: 25
   field of view: 60
   orthographic: 1
-  orthographic size: 150
+  orthographic size: 100
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -7969,7 +8144,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1985579928}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 565, y: 15, z: 324}
+  m_LocalPosition: {x: 419, y: 20, z: 549}
   m_LocalScale: {x: 1, y: 1.0000002, z: 1.0000002}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7988,7 +8163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2140042ebe1fa4d4fa64e71613bc5490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1457567489}
+  player: {fileID: 543450652014171524}
   minimapBorder: {fileID: 878563711}
 --- !u!1 &1992842453
 GameObject:
@@ -8041,43 +8216,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7500394230584582341, guid: 3053e95ee232a154f921316273b7a5d8, type: 3}
---- !u!84 &2010276198
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: WaterDepthMap
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1024
-  m_Height: 1024
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 92
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!64 &2027817590
 MeshCollider:
   m_ObjectHideFlags: 0

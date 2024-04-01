@@ -8,6 +8,10 @@ public class CompassController : MonoBehaviour
     [SerializeField] private Transform orientation;
     [SerializeField] private TextMeshProUGUI CompassDirectionText;
 
+    public void SetCompass(Transform target)
+    {
+        orientation = target;
+    }
     public void Update()
     {
         CompassImage.uvRect = new Rect(orientation.localEulerAngles.y / 360, 0, 1, 1);

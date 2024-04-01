@@ -3,11 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class DialogueTrigger : MonoBehaviour
 {
     [SerializeField] private List<DialogueString> dialogueStrings = new List<DialogueString>();
     [SerializeField] private Transform npcTransform;
+    [SerializeField] private Text toggleText;
+    [Min(1)]public int missionID;
+    
     private bool hasSpoken = false;
 
     private void OnTriggerEnter(Collider other)
@@ -15,9 +19,14 @@ public class DialogueTrigger : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             Debug.Log("Trigger");
-            other.gameObject.GetComponentInParent<DialogueManager>().DialogueStart(dialogueStrings,npcTransform);
+            other.gameObject.GetComponentInParent<DialogueManager>().DialogueStart(dialogueStrings, npcTransform);
             hasSpoken = true;
         }
+    }
+    public void AssignMission(string description)
+    {
+        MissionManager.Instance.missions[missionID - 1].missionDescription = description;
+        toggleText.text = description;
     }
 }
 
@@ -37,7 +46,4 @@ public class DialogueString
     [Header("Events")]
     public UnityEvent OnStartDialogue;
     public UnityEvent OnEndDialogue;
-    
-    
-
 }

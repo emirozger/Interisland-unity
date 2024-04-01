@@ -8,29 +8,18 @@ public class MissionManager : MonoBehaviour
 {
     public List<Mission> missions = new List<Mission>();
     public Toggle mission1;
+    public static MissionManager Instance;
 
-    private void Update()
-    {
-        CheckMissionStart(KeyCode.Alpha1, 1, "Portakallari tropikal adaya sat!");
-        CheckMissionStart(KeyCode.Alpha2, 2, "Elmalari tropikal adaya sat!");
-        CheckMissionStart(KeyCode.Alpha3, 3, "DENEME DENEME DENEME!");
+    private void Awake(){
+        Instance=this;
     }
 
-    private void CheckMissionStart(KeyCode keyCode, int id, string description)
+    public void StartMissionDescription(int id,string description)
     {
-        if (Input.GetKeyDown(keyCode))
-        {
-            StartMission(id, description);
-        }
-    }
-
-    public void StartMission(int id, string description)
-    {
-        Mission newMission = new Mission(id, description);
+        Mission newMission = new Mission(id,description);
         missions.Add(newMission);
         ToggleMissionPanel(true, description);
     }
-
     public void CompleteMission(int id)
     {
         Mission mission = missions.Find(m => m.missionID == id);
@@ -57,12 +46,13 @@ public class Mission
     public string missionDescription;
     public bool isCompleted;
 
-    public Mission(int id, string description)
+    public Mission(int id,string description)
     {
         missionID = id;
-        missionDescription = description;
+        missionDescription=description;
         isCompleted = false;
     }
+  
 
     public void CompleteMission()
     {

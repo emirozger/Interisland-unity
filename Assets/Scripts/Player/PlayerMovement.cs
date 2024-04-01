@@ -7,19 +7,21 @@ using WaterSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement Settings")] [SerializeField]
+    [Header("Movement Settings")]
+    [SerializeField]
     private float speed = 4.5f;
 
     [SerializeField] private float gravity = -9.81f * 2f;
     [SerializeField] private float jumpHeight = .8f;
 
-    [Header("Ground Check Settings")] [SerializeField]
+    [Header("Ground Check Settings")]
+    [SerializeField]
     private float groundDistance = 0.2f;
 
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
 
-    [Space(20)] [SerializeField] private Transform orientation;
+    [Space(20)][SerializeField] private Transform orientation;
 
     private bool isGrounded;
     private Vector3 velocity;
@@ -42,24 +44,40 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            Debug.Log("trigger exit");
+            inSeaCamera.SetActive(false);
+            this.characterController.enabled = true;
+            GameObject.FindObjectOfType<CameraController>().enabled = true;
+            this.GetComponent<BuoyantObject>().enabled = false;
+            rb.isKinematic = true;
+            inSea = false;
+        }
         if (other.gameObject.CompareTag("Sea"))
         {
             Debug.Log("trigger enter");
+            other.gameObject.tag="oldSea";
             inSeaCamera.SetActive(true);
             this.characterController.enabled = false;
             GameObject.FindObjectOfType<CameraController>().enabled = false;
             this.GetComponent<BuoyantObject>().enabled = true;
             rb.isKinematic = false;
             inSea = true;
-            other.gameObject.SetActive(false);
+            //other.gameObject.SetActive(false);
         }
+
     }
+
 
     float xRotation;
     float yRotation;
 
     void Update()
     {
+
+
         if (inSea)
         {
             input.x = Input.GetAxis("Horizontal");
@@ -78,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
             orientation.rotation = Quaternion.Euler(orientation.rotation.x, yRotation, orientation.rotation.z);
 
             orientation.Rotate(Vector3.up * mouseX);
-            
+
         }
         else
         {

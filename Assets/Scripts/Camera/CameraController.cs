@@ -6,12 +6,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private float smoothSpeed = 0.125f;
     [SerializeField] private Vector3 offset;
-    
+
     [Header("Mouse Look Settings")]
     [SerializeField] private float mouseSensitivity = 100f;
     [SerializeField] private Transform playerMesh;
     [SerializeField] private Transform orientation;
-    
+
     private float xRotation = 0f;
     private float yRotation = 0f;
 
@@ -20,7 +20,16 @@ public class CameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-
+    public void ShowCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    public void HideCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
     void LateUpdate()
     {
         Vector3 desiredPosition = target.position + offset;
@@ -41,6 +50,6 @@ public class CameraController : MonoBehaviour
         orientation.rotation = Quaternion.Euler(orientation.rotation.x, yRotation, orientation.rotation.z);
 
         playerMesh.Rotate(Vector3.up * mouseX);
-            
+
     }
 }

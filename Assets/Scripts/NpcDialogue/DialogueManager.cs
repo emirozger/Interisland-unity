@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Unity.Mathematics;
+using UnityEngine.Events;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -131,9 +132,11 @@ public class DialogueManager : MonoBehaviour
     }
     if (!dialogueList[currentDialogueIndex].isQuestion)
     {
-      yield return new WaitUntil((() => Input.GetMouseButtonDown(0)));
-    }
+      //bir parentez sildim.
+      yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+    
   
+    }
     if (dialogueList[currentDialogueIndex].isEnd)
     {
       //text is end ise direkt stop oldugu icin onenddialogu invokelanamıyor.
@@ -155,8 +158,8 @@ public class DialogueManager : MonoBehaviour
     mouseLook.enabled = true;
     playerCameraTransform.localRotation = Quaternion.Euler(0,0,0);
     fpsController.enabled = true;
-    Cursor.lockState = CursorLockMode.Locked;
-    Cursor.visible = false;
+    //Cursor.lockState = CursorLockMode.Locked;
+    //Cursor.visible = false;
   }
   private IEnumerator TurnCameraTowardsNPC(Transform npcTransform)
   {

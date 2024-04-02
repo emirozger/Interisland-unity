@@ -1,6 +1,5 @@
-using Unity.Mathematics;
+using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 
 public class BoatController : MonoBehaviour
 {
@@ -9,33 +8,65 @@ public class BoatController : MonoBehaviour
     public float steerSpeed = 400.0f;
     public float boatRotateSpeed = 4.0f;
     public float movementThresold = 10.0f;
+    public float maxSpeed = 10.0f;
     float vertical;
     float movementFactor;
     float horizontalInput;
     float steerFactor;
     public Transform steerTransform;
-
+    Rigidbody rb;
     bool boatIsAnchored = false;
+    public int anchoredForce = 50;
+    public Camera boatCamera;
+    public float strength = 90;
+    public float randomness = 90;
+    public int vibrato = 10;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     void Update()
     {
-        AnchorBoat();
         Movement();
+        AnchorBoat();
         Steer();
     }
+
     void AnchorBoat()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            boatIsAnchored = !boatIsAnchored;
-            if (movementFactor > 0.0f)
+            if (!boatIsAnchored)
             {
-                movementFactor = Mathf.Lerp(movementFactor, 0.0f, Time.deltaTime * movementThresold);
-                vertical = 0;
-            }
-        }
+                boatIsAnchored = true;
+                var anchorPoint = this.transform.position;
+                float currentSpeed = rb.velocity.magnitude;
+                float shakeStrength = currentSpeed < 4f ? strength : (currentSpeed < 6f ? strength * 3f : strength * 5f);
 
+                rb.AddForceAtPosition(Vector3.down * anchoredForce, anchorPoint, ForceMode.Acceleration);
+                boatCamera.DOShakeRotation(1f,shakeStrength,vibrato,randomness);
+
+                     
+                if (movementFactor > 0.0f)
+                {
+                    movementFactor = Mathf.Lerp(movementFactor, 0.0f, Time.deltaTime * movementThresold * 20);
+                    vertical = 0;
+                }
+              
+            }
+            else
+            {
+                boatIsAnchored = false;
+            }
+         
+          
+          
+          
+        }
     }
+
     void Movement()
     {
         if (!boatIsAnchored)
@@ -44,7 +75,13 @@ public class BoatController : MonoBehaviour
         }
 
         movementFactor = Mathf.Lerp(movementFactor, vertical, Time.deltaTime / movementThresold);
-        transform.Translate(0.0f, 0.0f, movementFactor * speed);
+        rb.AddForce(transform.forward * movementFactor * speed, ForceMode.Acceleration);
+
+        // Speed limit
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
     }
 
     void Steer()
@@ -53,10 +90,10 @@ public class BoatController : MonoBehaviour
         {
             horizontalInput = Input.GetAxis("Horizontal");
         }
-       
+
         steerFactor = Mathf.Lerp(steerFactor, horizontalInput * vertical, Time.deltaTime / movementThresold);
-        steerFactor=Mathf.Clamp(steerFactor,-0.2f,0.2f);
-        steerTransform.localRotation = Quaternion.Euler(steerFactor * Mathf.Pow(steerSpeed,2), 90.0f, 90.0f);
+        steerFactor = Mathf.Clamp(steerFactor, -0.2f, 0.2f);
+        steerTransform.localRotation = Quaternion.Euler(steerFactor * Mathf.Pow(steerSpeed, 2), 90.0f, 90.0f);
         transform.Rotate(0.0f, steerFactor * boatRotateSpeed, 0.0f);
     }
 }

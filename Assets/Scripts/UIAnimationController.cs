@@ -98,7 +98,7 @@ public class UIAnimationController : MonoBehaviour
             image.DOFillAmount(pauseBGFillEnd, pauseBGFillEndTime).From(0);
         }
 
-        PauseBG.ElementAt(2).transform.DOScaleX(1.220534f, 0.4f).From(2f);
+        PauseBG.ElementAt(2).transform.DOScaleX(1f, 0.4f).From(2f);
 
         foreach (var button in PauseButtons)
         {

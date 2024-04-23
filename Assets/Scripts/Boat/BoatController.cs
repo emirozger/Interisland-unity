@@ -14,28 +14,39 @@ public class BoatController : MonoBehaviour
     float horizontalInput;
     float steerFactor;
     public Transform steerTransform;
-    Rigidbody rb;
+    public Rigidbody rb;
     bool boatIsAnchored = false;
     public int anchoredForce = 50;
     public Camera boatCamera;
     public float strength = 90;
     public float randomness = 90;
     public int vibrato = 10;
+    [SerializeField] private BoatInteract boatInteract;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+     //   rb = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            boatInteract.isDriving = true;
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            boatInteract.isDriving = false;
+        }
         Movement();
         AnchorBoat();
         Steer();
     }
-
+    
     void AnchorBoat()
     {
+        if (!boatInteract.isDriving) return;
+        
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (!boatIsAnchored)
@@ -71,9 +82,14 @@ public class BoatController : MonoBehaviour
     {
         if (!boatIsAnchored)
         {
-            vertical = Input.GetKey(KeyCode.W) ? 1 : 0;
+            //TODO : PLAYER BOTTA DEGİLSE RETURN
+            if (boatInteract.isDriving)
+            {
+                vertical = Input.GetKey(KeyCode.W) ? 1 : 0;
+            }
         }
 
+        
         movementFactor = Mathf.Lerp(movementFactor, vertical, Time.deltaTime / movementThresold);
         rb.AddForce(transform.forward * movementFactor * speed, ForceMode.Acceleration);
 
@@ -86,14 +102,16 @@ public class BoatController : MonoBehaviour
 
     void Steer()
     {
+        if (!boatInteract.isDriving) return;
+        
         if (!boatIsAnchored)
         {
             horizontalInput = Input.GetAxis("Horizontal");
         }
 
         steerFactor = Mathf.Lerp(steerFactor, horizontalInput * vertical, Time.deltaTime / movementThresold);
-        steerFactor = Mathf.Clamp(steerFactor, -0.2f, 0.2f);
-        steerTransform.localRotation = Quaternion.Euler(steerFactor * Mathf.Pow(steerSpeed, 2), 90.0f, 90.0f);
+        steerFactor = Mathf.Clamp(steerFactor, -0.5f, 0.5f);
+        steerTransform.localRotation = Quaternion.Euler(steerFactor * Mathf.Pow(steerSpeed, 2), 90.0f, 0.0f);
         transform.Rotate(0.0f, steerFactor * boatRotateSpeed, 0.0f);
     }
 }

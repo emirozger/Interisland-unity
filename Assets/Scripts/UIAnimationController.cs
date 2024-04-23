@@ -10,15 +10,15 @@ using System.Collections;
 public class UIAnimationController : MonoBehaviour
 {
 
-    [Header("Settings")]
-    public LoopType loopRidderFlipper;
+    [Header("Settings")] public LoopType loopRidderFlipper;
     public LoopType GoldFrameLoop;
     public float pauseBGFillEnd, pauseBG2FillEnd;
     public float pauseBGFillEndTime, pauseBG2FillEndTime;
     public float fillSpeed = 1f;
     public float holdDurationForMaxFill = 3f;
 
-    [Header("References")]
+    [Header("References")] [SerializeField]
+    private Transform shipTeleportTransform;
 
     public Image ridder;
     public Image[] PauseBG;
@@ -41,8 +41,7 @@ public class UIAnimationController : MonoBehaviour
     public Image SoundSlider0;
     public Image SoundSlider1;
 
-    [Header("Ease Settings")]
-    public Ease RidderAnimEase;
+    [Header("Ease Settings")] public Ease RidderAnimEase;
     public Ease ridderEase;
     public Ease FireworksEase;
     public Ease NewIslandEase;
@@ -70,7 +69,7 @@ public class UIAnimationController : MonoBehaviour
                 OpenPauseMenu();
         }
 
-        if (Input.GetKeyDown(KeyCode.I)) 
+        if (Input.GetKeyDown(KeyCode.I))
             Inventory();
 
         if (Input.GetKeyDown(KeyCode.T))
@@ -78,6 +77,7 @@ public class UIAnimationController : MonoBehaviour
 
         BackToShip();
     }
+
     public void ShowSlider()
     {
         soundSlider.DOFade(1f, 1.2f).From(0).SetEase(PauseButtonsEase);
@@ -114,32 +114,34 @@ public class UIAnimationController : MonoBehaviour
     public void ClosePauseMenu()
     {
         PausePanel.transform.DOScale(new Vector3(0, 0, 1), 0.5f)
-      .OnComplete(() => PausePanel.SetActive(false));
+            .OnComplete(() => PausePanel.SetActive(false));
         isGamePaused = false;
 
     }
+
     public void NewIslandAnim()
     {
         Sequence sequence = DOTween.Sequence();
         AnimRidder.transform.DORotate(new Vector3(0, 0, -180), 3);
         sequence.Append(AnimRidder.rectTransform.DOScale(Vector3.one, 1f).From(Vector3.zero))
 
-                .Join(AnimPaper.rectTransform.DOScaleX(1f, 1f).From(0f))
-                .Join(AnimLeft.rectTransform.DOLocalMoveX(-287, 1f).From(27))
-                .Join(AnimRight.rectTransform.DOLocalMoveX(358f, 1.1f).From(68));
+            .Join(AnimPaper.rectTransform.DOScaleX(1f, 1f).From(0f))
+            .Join(AnimLeft.rectTransform.DOLocalMoveX(-287, 1f).From(27))
+            .Join(AnimRight.rectTransform.DOLocalMoveX(358f, 1.1f).From(68));
         sequence.AppendInterval(0.1f);
 
         for (int i = 0; i < AnimFireworks.Length; i++)
         {
             float random = Random.Range(1.25f, 2f);
             AnimFireworks[i].rectTransform.DOScale(Vector3.one, 1f).From(Vector3.zero).SetDelay(random).SetLoops(10);
-            AnimFireworks[i].DOFade(0, 1).From(1).SetDelay(random).SetLoops(10).OnComplete(() => AnimFireworks[i].DOKill());
+            AnimFireworks[i].DOFade(0, 1).From(1).SetDelay(random).SetLoops(10)
+                .OnComplete(() => AnimFireworks[i].DOKill());
         }
 
         sequence.Append(AnimText.DOFade(1, 1).From(0))
-        .Join(NewIslandName.DOFade(1, 2).From(0))
-        .Join(NewIslandName.rectTransform.DOScale(Vector3.one, 1f).From(2.2f).SetEase(NewIslandEase))
-        .OnComplete(() => newIslandAnimPanel.transform.DOMoveY(1200, .8f)).SetEase(AnimPanelEase);
+            .Join(NewIslandName.DOFade(1, 2).From(0))
+            .Join(NewIslandName.rectTransform.DOScale(Vector3.one, 1f).From(2.2f).SetEase(NewIslandEase))
+            .OnComplete(() => newIslandAnimPanel.transform.DOMoveY(1200, .8f)).SetEase(AnimPanelEase);
     }
 
     public void Inventory()
@@ -152,11 +154,13 @@ public class UIAnimationController : MonoBehaviour
 
         if (InventoryImage.localScale == Vector3.one)
         {
-            inventoryTween = InventoryImage.DOScale(Vector3.zero, 0.5f).From(Vector3.one).OnComplete(() => inventoryTween = null);
+            inventoryTween = InventoryImage.DOScale(Vector3.zero, 0.5f).From(Vector3.one)
+                .OnComplete(() => inventoryTween = null);
         }
         else
         {
-            inventoryTween = InventoryImage.DOScale(Vector3.one, 1f).From(Vector3.zero).SetEase(ScreenUIEase).OnComplete(() => inventoryTween = null);
+            inventoryTween = InventoryImage.DOScale(Vector3.one, 1f).From(Vector3.zero).SetEase(ScreenUIEase)
+                .OnComplete(() => inventoryTween = null);
         }
     }
 
@@ -170,35 +174,42 @@ public class UIAnimationController : MonoBehaviour
             questTween = QuestImage.DOScale(Vector3.zero, 0.5f).From(Vector3.one).OnComplete(() => questTween = null);
 
         else
-            questTween = QuestImage.DOScale(Vector3.one, 1f).From(Vector3.zero).SetEase(ScreenUIEase).OnComplete(() => questTween = null);
+            questTween = QuestImage.DOScale(Vector3.one, 1f).From(Vector3.zero).SetEase(ScreenUIEase)
+                .OnComplete(() => questTween = null);
     }
 
+    public float requiredHoldTime = 3f;
+    private float fillStartTime;
 
-    public void BackToShip()
+
+    private void BackToShip()
     {
         backToShipImage.fillAmount = 0f;
 
-        if (Input.GetKeyDown(KeyCode.S))
+        // Holding 'P' key
+        if (Input.GetKey(KeyCode.P))
         {
             isFilling = true;
-            holdStartTime = Time.time;
         }
-        if (Input.GetKeyUp(KeyCode.S))
+        // Releasing 'P' key
+        else if (Input.GetKeyUp(KeyCode.P))
         {
-            isFilling = false;
-
-            if (backToShipImage.fillAmount < 1f)
-            {
-                backToShipImage.DOFillAmount(0f, fillSpeed);
-            }
+                isFilling = false;
         }
+
         if (isFilling)
         {
-            float holdDuration = Time.time - holdStartTime;
-            float targetFillAmount = Mathf.Clamp01(holdDuration / holdDurationForMaxFill);
-            backToShipImage.DOFillAmount(targetFillAmount, fillSpeed);
+            fillStartTime = Time.time;
+            backToShipImage.DOFillAmount(1f, 3f);
+            if(backToShipImage.fillAmount >= .9f)
+            { 
+                PlayerMovement.Instance.TeleportToShip(shipTeleportTransform);
+            }
+        }
+        else
+        {
+            backToShipImage.DOFillAmount(0f, fillSpeed);
         }
     }
-
 
 }

@@ -60,7 +60,7 @@ public static class LocalToWorldJob
         Data[guid].Processing = true;
         JobHandle.ScheduleBatchedJobs();
     }
-
+    
     public static void CompleteJob(int guid)
     {
         Data[guid].Handle.Complete();

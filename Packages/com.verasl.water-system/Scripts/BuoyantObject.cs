@@ -105,11 +105,12 @@ namespace WaterSystem
             Init();
             LocalToWorldConversion();
         }
-
+        public Collider physicsBasedCollider;
         private void SetupColliders()
         {
             // The object must have a Collider
-            colliders = GetComponentsInChildren<Collider>();
+            //colliders = GetComponentsInChildren<Collider>();
+            colliders = physicsBasedCollider.GetComponents<Collider>();
             if (colliders.Length != 0) return;
             
             colliders = new Collider[1];

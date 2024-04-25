@@ -1,7 +1,12 @@
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement Instance;
+    private Transform playerTransform;
+    
     [Header("Movement Settings")]
     [SerializeField]
     private float speed = 4.5f;
@@ -23,6 +28,11 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 input;
     private CharacterController characterController;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -33,6 +43,11 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawSphere(groundCheck.position, groundDistance);
     }
 
+    public void TeleportToShip(Transform target)
+    {
+        this.transform.position = target.transform.position;
+        this.transform.rotation = Quaternion.identity;
+    }
     void Update()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);

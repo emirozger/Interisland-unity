@@ -7,14 +7,14 @@ using UnityEngine.Experimental.GlobalIllumination;
 public class BoatInteract : MonoBehaviour
 {
     bool inBoat;
-    bool isDriving;
+    public bool isDriving;
     private float groundDistance = 0.2f;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask boatMask;
     [SerializeField] private BoatController boatController;
     [SerializeField] private Camera playerFpsCamera;
     [SerializeField] private LayerMask steerLayerMask;
-
+    [SerializeField] private Highlight steerHighlight;
     public UnityEvent OnEnterDriveBoat;
     public UnityEvent OnExitDriveBoat;
 
@@ -72,7 +72,7 @@ public class BoatInteract : MonoBehaviour
 
     public void EnterDriveHandler()
     {
-
+        steerHighlight.ToggleHighlight(false);
         Destroy(this.GetComponent<CapsuleCollider>());
         rb.isKinematic = true;
         this.transform.parent = inBoatPlayerPos;
@@ -87,6 +87,7 @@ public class BoatInteract : MonoBehaviour
         cameraRig.gameObject.SetActive(false);
         boatCamera.gameObject.SetActive(true);
         isDriving = true;
+        
 
     }
     public void ExitDriveHandler()
@@ -98,7 +99,7 @@ public class BoatInteract : MonoBehaviour
         this.GetComponent<PlayerMovement>().enabled = true;
         this.GetComponent<PlayerPickAndDrop>().enabled = true;
         this.GetComponent<DialogueManager>().enabled = true;
-        boatController.enabled = false;
+        //boatController.enabled = false;
         cameraRig.parent = null;
         cameraRig.gameObject.SetActive(true);
         boatCamera.gameObject.SetActive(false);

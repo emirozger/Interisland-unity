@@ -44,8 +44,10 @@ namespace WaterSystem
         public WaterSettingsData settingsData;
         [SerializeField]
         public WaterSurfaceData surfaceData;
-        [SerializeField]
-        private WaterResources resources;
+        
+        
+        public WaterResources resources;
+        
 
         private static readonly int CameraRoll = Shader.PropertyToID("_CameraRoll");
         private static readonly int InvViewProjection = Shader.PropertyToID("_InvViewProjection");

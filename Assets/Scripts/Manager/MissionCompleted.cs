@@ -13,7 +13,9 @@ public class MissionCompleted : MonoBehaviour
     public bool missionCompleted = false;
     public int requiredObjectCount;
     public int objectCount;
-
+    [SerializeField] private GameObject anotherOfferPanel;
+    [SerializeField] private TextMeshProUGUI anotherOfferInfoText;
+    [SerializeField] private CameraController mouseLook;
 
     private void Start()
     {
@@ -93,6 +95,23 @@ public class MissionCompleted : MonoBehaviour
         }
     }
 
+    public void AnotherOfferAccept()
+    {
+        if (player.inHandObjType != ObjectType.Null && player.currentObjectGrabbling != null)
+            Destroy(player.currentObjectGrabbling.gameObject);
+
+        player.inHandObjType = ObjectType.Null;
+        player.InHand = false;
+        player.currentObjectGrabbling = null;
+        anotherOfferPanel.SetActive(false);
+        mouseLook.enabled = true;
+        
+    }
+    public void AnotherOfferDecline()
+    {
+        anotherOfferPanel.SetActive(false);
+        mouseLook.enabled = true;
+    }
     public IEnumerator AnotherOffer(float offerDuration = 1f)
     {
         if (!player.InHand)
@@ -100,22 +119,16 @@ public class MissionCompleted : MonoBehaviour
             acceptanceText.text = "You have no object in your hand!";
             yield break;
         }
-
         int offerPrice = (int)Random.Range(minOfferPrices[(int)requiredObjectType], maxOfferPrices[(int)requiredObjectType]);
-        acceptanceText.text = $"Your object is not {requiredObjectType}! I give you {offerPrice}";
-        yield return new WaitForSeconds(offerDuration);
+        anotherOfferInfoText.text = $"Your object is not {requiredObjectType}! I give you {offerPrice}";
+        anotherOfferPanel.SetActive(true);
+        mouseLook.enabled = false;
 
-        if (player.inHandObjType != ObjectType.Null && player.currentObjectGrabbling != null)
-            Destroy(player.currentObjectGrabbling.gameObject);
-
-        player.inHandObjType = ObjectType.Null;
-        player.InHand = false;
-        player.currentObjectGrabbling = null;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (player != null && !missionCompleted)
+        if (player != null)
         {
             if (requiredObjectType == player.inHandObjType)
             {
@@ -134,7 +147,7 @@ public class MissionCompleted : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (player != null && !missionCompleted)
+        if (player != null)
         {
             offerInputField.gameObject.SetActive(false);
 
@@ -155,7 +168,7 @@ public class MissionCompleted : MonoBehaviour
             if (objectCount == requiredObjectCount)
             {
                 FindObjectOfType<MissionManager>().CompleteMission(missionID);
-                missionCompleted = true;
+                //missionCompleted = true;
                 Debug.Log("COMPLETED MISSION");
             }
         }

@@ -10,6 +10,7 @@ public class DialogueTrigger : MonoBehaviour
     [SerializeField] private List<DialogueString> dialogueStrings = new List<DialogueString>();
     [SerializeField] private Transform npcTransform;
     [SerializeField] private Text toggleText;
+    [SerializeField] private Animator animator;
     [Min(1)]public int missionID;
     
     private bool hasSpoken = false;
@@ -21,6 +22,8 @@ public class DialogueTrigger : MonoBehaviour
             Debug.Log("Trigger");
             other.gameObject.GetComponentInParent<DialogueManager>().DialogueStart(dialogueStrings, npcTransform);
             hasSpoken = true;
+            animator.SetTrigger("Talking");
+            other.gameObject.GetComponentInParent<DialogueManager>().instantiateTransform = this.transform; //new npc spawned pos
         }
     }
     public void AssignMission(string description)

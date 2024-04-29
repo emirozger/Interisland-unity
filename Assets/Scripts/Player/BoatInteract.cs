@@ -46,6 +46,7 @@ public class BoatInteract : MonoBehaviour
                 }
                 else
                 {
+                    print("drive suan");
                     OnEnterDriveBoat?.Invoke();
                 }
             }
@@ -72,7 +73,8 @@ public class BoatInteract : MonoBehaviour
 
     public void EnterDriveHandler()
     {
-        steerHighlight.ToggleHighlight(false);
+        print("invoke");
+        //steerHighlight.ToggleHighlight(false);
         Destroy(this.GetComponent<CapsuleCollider>());
         rb.isKinematic = true;
         this.transform.parent = inBoatPlayerPos;

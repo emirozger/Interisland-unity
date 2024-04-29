@@ -59,9 +59,14 @@ public class UIAnimationController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+
+        if (Input.GetKeyDown(KeyCode.L))
         {
             NewIslandAnim();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+
 
             if (isGamePaused)
                 ClosePauseMenu();
@@ -121,14 +126,13 @@ public class UIAnimationController : MonoBehaviour
 
     public void NewIslandAnim()
     {
-        Sequence sequence = DOTween.Sequence();
+        newIslandAnimPanel.SetActive(true);
         AnimRidder.transform.DORotate(new Vector3(0, 0, -180), 3);
-        sequence.Append(AnimRidder.rectTransform.DOScale(Vector3.one, 1f).From(Vector3.zero))
-
-            .Join(AnimPaper.rectTransform.DOScaleX(1f, 1f).From(0f))
-            .Join(AnimLeft.rectTransform.DOLocalMoveX(-287, 1f).From(27))
-            .Join(AnimRight.rectTransform.DOLocalMoveX(358f, 1.1f).From(68));
-        sequence.AppendInterval(0.1f);
+        AnimRidder.rectTransform.DOScale(Vector3.one, 1f).From(Vector3.zero);
+        AnimPaper.rectTransform.DOScaleX(1f, 1f).From(0f);
+        AnimLeft.rectTransform.DOLocalMoveX(-287, 1f).From(27);
+        AnimRight.rectTransform.DOLocalMoveX(358f, 1.1f).From(68);
+       
 
         for (int i = 0; i < AnimFireworks.Length; i++)
         {
@@ -138,10 +142,18 @@ public class UIAnimationController : MonoBehaviour
                 .OnComplete(() => AnimFireworks[i].DOKill());
         }
 
-        sequence.Append(AnimText.DOFade(1, 1).From(0))
-            .Join(NewIslandName.DOFade(1, 2).From(0))
-            .Join(NewIslandName.rectTransform.DOScale(Vector3.one, 1f).From(2.2f).SetEase(NewIslandEase))
-            .OnComplete(() => newIslandAnimPanel.transform.DOMoveY(1200, .8f)).SetEase(AnimPanelEase);
+        AnimText.DOFade(1, 1).From(0);
+        NewIslandName.DOFade(1, 2).From(0);
+        NewIslandName.rectTransform.DOScale(Vector3.one, 1f).From(2.2f).SetEase(NewIslandEase);
+        newIslandAnimPanel.transform.DOScale(0f, 1f).SetDelay(3f);
+
+        DOVirtual.DelayedCall(3f, () => 
+        {
+            //newIslandAnimPanel.transform.DOScale(0f, 1f);
+           // .OnComplete(() => newIslandAnimPanel.SetActive(false));
+            //.OnComplete(() => newIslandAnimPanel.transform.DOScale(1f, 1f));
+      
+        });
     }
 
     public void Inventory()
@@ -194,20 +206,25 @@ public class UIAnimationController : MonoBehaviour
         // Releasing 'P' key
         else if (Input.GetKeyUp(KeyCode.P))
         {
-                isFilling = false;
+            isFilling = false;
         }
 
         if (isFilling)
         {
-            fillStartTime = Time.time;
+            fillStartTime += Time.deltaTime;
+            print(fillStartTime);
+
             backToShipImage.DOFillAmount(1f, 3f);
-            if(backToShipImage.fillAmount >= .9f)
-            { 
+            if (fillStartTime >= 3f)
+            {
                 PlayerMovement.Instance.TeleportToShip(shipTeleportTransform);
+                backToShipImage.fillAmount = 0f;
+                fillStartTime = 0f;
             }
         }
         else
         {
+            fillStartTime = 0f;
             backToShipImage.DOFillAmount(0f, fillSpeed);
         }
     }

@@ -111,7 +111,7 @@ public class BoatController : MonoBehaviour
 
         steerFactor = Mathf.Lerp(steerFactor, horizontalInput * vertical, Time.deltaTime / movementThresold);
         steerFactor = Mathf.Clamp(steerFactor, -0.5f, 0.5f);
-        steerTransform.localRotation = Quaternion.Euler(steerFactor * Mathf.Pow(steerSpeed, 2), 90.0f, 0.0f);
+        steerTransform.localRotation = Quaternion.Euler(0.0f, 0.0f, steerFactor * Mathf.Pow(steerSpeed, 2));
         transform.Rotate(0.0f, steerFactor * boatRotateSpeed, 0.0f);
     }
 }

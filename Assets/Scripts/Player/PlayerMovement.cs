@@ -27,6 +27,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 velocity;
     private Vector3 input;
     private CharacterController characterController;
+    
+    public Rigidbody playerRB;
+    public Rigidbody shipRB;
 
     private void Awake()
     {
@@ -48,18 +51,35 @@ public class PlayerMovement : MonoBehaviour
         this.transform.position = target.transform.position;
         this.transform.rotation = Quaternion.identity;
     }
+
+    public LayerMask boatMask;
+    public bool PlayerInBoat;
+
+    private void FixedUpdate()
+    {
+        if (PlayerInBoat)
+        {
+            Vector3 targetPosition = shipRB.velocity;
+            characterController.Move(targetPosition*Time.fixedDeltaTime);
+          
+        }
+    }
+
     void Update()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
-
+        
+        PlayerInBoat = Physics.CheckSphere(groundCheck.position, groundDistance*2, boatMask);
         input.x = Input.GetAxis("Horizontal");
         input.y = Input.GetAxis("Vertical");
 
         Vector3 move = orientation.right * input.x + orientation.forward * input.y;
+      
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if ((isGrounded) && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
+
         characterController.Move(move * speed * Time.deltaTime);
 
         if (Input.GetButtonDown("Jump") && isGrounded)

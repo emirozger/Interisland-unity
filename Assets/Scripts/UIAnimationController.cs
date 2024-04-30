@@ -214,8 +214,8 @@ public class UIAnimationController : MonoBehaviour
             fillStartTime += Time.deltaTime;
             print(fillStartTime);
 
-            backToShipImage.DOFillAmount(1f, 3f);
-            if (fillStartTime >= 3f)
+            backToShipImage.DOFillAmount(1f, 1f);
+            if (fillStartTime >= 1f)
             {
                 PlayerMovement.Instance.TeleportToShip(shipTeleportTransform);
                 backToShipImage.fillAmount = 0f;

@@ -1,4 +1,6 @@
+using System;
 using DG.Tweening;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,6 +8,7 @@ using UnityEngine.Experimental.GlobalIllumination;
 
 public class BoatInteract : MonoBehaviour
 {
+    public static BoatInteract Instance;
     bool inBoat;
     public bool isDriving;
     private float groundDistance = 0.2f;
@@ -14,26 +17,30 @@ public class BoatInteract : MonoBehaviour
     [SerializeField] private BoatController boatController;
     [SerializeField] private Camera playerFpsCamera;
     [SerializeField] private LayerMask steerLayerMask;
+    [SerializeField] private LayerMask anchorSteerMask;
     [SerializeField] private Highlight steerHighlight;
     public UnityEvent OnEnterDriveBoat;
     public UnityEvent OnExitDriveBoat;
 
     public Transform inBoatPlayerPos;
     public Transform cameraRig;
-    public GameObject boatCamera;
+    public Transform driveBoatCameraPos;
     Rigidbody rb;
     RaycastHit hit;
     public bool InBoat => inBoat;
 
-    void Start()
+
+    private void Awake()
     {
-        rb=GetComponent<Rigidbody>();
-        boatController.enabled = false;
-        boatCamera.gameObject.SetActive(false);
+        Instance = this;
     }
 
-
-
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        boatController.enabled = false;
+    }
+    
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))
@@ -51,30 +58,44 @@ public class BoatInteract : MonoBehaviour
                 }
             }
         }
+
         if (isDriving) return;
         if (hit.collider != null)
         {
             hit.collider.GetComponent<Highlight>()?.ToggleHighlight(false);
             inBoat = false;
         }
-       
-        Debug.DrawRay(playerFpsCamera.transform.position, playerFpsCamera.transform.forward*30, Color.red);
 
-        if (Physics.Raycast(playerFpsCamera.transform.position,playerFpsCamera.transform.forward,out  hit, 3f, steerLayerMask))
+        Debug.DrawRay(playerFpsCamera.transform.position, playerFpsCamera.transform.forward * 30, Color.red);
+
+        if (Physics.Raycast(playerFpsCamera.transform.position, playerFpsCamera.transform.forward, out hit, 2f, steerLayerMask))
         {
-            print(hit.collider.name);
             hit.collider.GetComponent<Highlight>()?.ToggleHighlight(true);
+            print(hit.collider.name);
             inBoat = true;
-        }      
-    
-       
-
+           
+        }
+        else if ((Physics.Raycast(playerFpsCamera.transform.position, playerFpsCamera.transform.forward, out hit, 2f, anchorSteerMask)))
+        {
+              hit.collider.GetComponent<Highlight>()?.ToggleHighlight(true);
+                if (!Input.GetKeyDown(KeyCode.E)) return;
+                if (!BoatController.Instance.boatIsAnchored) return;
+                var rotateGoal = new Vector3(0, 180, 90);
+                PlayerMovement.Instance.enabled = false;
+                CameraController.Instance.enabled = false;
+                BoatController.Instance.anchorSteer.DOLocalRotate(rotateGoal, 5f)
+                    .OnComplete((() =>
+                    {
+                        BoatController.Instance.boatIsAnchored = false;
+                        PlayerMovement.Instance.enabled = true;
+                        CameraController.Instance.enabled = true;
+                    }));
+        }
     }
 
     public void EnterDriveHandler()
     {
-        print("invoke");
-        //steerHighlight.ToggleHighlight(false);
+        steerHighlight.ToggleHighlight(false);
         Destroy(this.GetComponent<CapsuleCollider>());
         rb.isKinematic = true;
         this.transform.parent = inBoatPlayerPos;
@@ -85,28 +106,25 @@ public class BoatInteract : MonoBehaviour
         this.GetComponent<PlayerPickAndDrop>().enabled = false;
         this.GetComponent<DialogueManager>().enabled = false;
         boatController.enabled = true;
-        cameraRig.transform.parent = this.transform;
-        cameraRig.gameObject.SetActive(false);
-        boatCamera.gameObject.SetActive(true);
+        cameraRig.transform.parent = driveBoatCameraPos;
+        cameraRig.transform.localRotation=Quaternion.identity;
+        cameraRig.transform.localPosition = Vector3.zero;
+        cameraRig.GetComponent<CameraController>().enabled = false;
         isDriving = true;
-        
-
     }
+
     public void ExitDriveHandler()
     {
-        rb.isKinematic=false;
+        rb.isKinematic = false;
         this.AddComponent<CapsuleCollider>();
         this.transform.parent = null;
         this.GetComponent<CharacterController>().enabled = true;
         this.GetComponent<PlayerMovement>().enabled = true;
         this.GetComponent<PlayerPickAndDrop>().enabled = true;
         this.GetComponent<DialogueManager>().enabled = true;
-        //boatController.enabled = false;
+        playerFpsCamera.transform.parent = cameraRig;
         cameraRig.parent = null;
-        cameraRig.gameObject.SetActive(true);
-        boatCamera.gameObject.SetActive(false);
+        cameraRig.GetComponent<CameraController>().enabled = true;
         isDriving = false;
-
     }
 }
-

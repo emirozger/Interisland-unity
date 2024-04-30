@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public static CameraController Instance;
+    
     [Header("Camera Movement Settings")]
     [SerializeField] private Transform target;
     [SerializeField] private float smoothSpeed = 0.125f;
@@ -14,6 +16,11 @@ public class CameraController : MonoBehaviour
 
     private float xRotation = 0f;
     private float yRotation = 0f;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -30,15 +37,22 @@ public class CameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-    void LateUpdate()
+    void Update()
+    {
+       
+    }
+
+    private void LateUpdate()
     {
         Vector3 desiredPosition = target.position + offset;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-        transform.position = smoothedPosition;
-
+        //Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed*Time.fixedDeltaTime);
+        transform.position = desiredPosition;
         transform.LookAt(target);
+        HandleMouseLook();
+    }
 
-
+    private void HandleMouseLook()
+    {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
@@ -50,6 +64,5 @@ public class CameraController : MonoBehaviour
         orientation.rotation = Quaternion.Euler(orientation.rotation.x, yRotation, orientation.rotation.z);
 
         playerMesh.Rotate(Vector3.up * mouseX);
-
     }
 }

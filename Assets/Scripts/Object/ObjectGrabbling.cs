@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ObjectGrabbling : MonoBehaviour
@@ -38,8 +39,8 @@ public class ObjectGrabbling : MonoBehaviour
             PlayerPickAndDrop.Instance.inHandObjType = this.thisObjType;
             print(this.thisObjType);
         }
-        
     }
+
     public void Drop()
     {
         this.rb.useGravity = true;
@@ -64,13 +65,23 @@ public class ObjectGrabbling : MonoBehaviour
         ObjectSorting.Instance.AddItem(this.gameObject);
     }
 
+    private void Update()
+    {
+        float rotationAmount = Input.GetKey(KeyCode.Q) ? -100 * Time.deltaTime : Input.GetKey(KeyCode.R) ? 100 * Time.deltaTime : 0;
+        this.transform.Rotate(Vector3.right, rotationAmount);
+    }
+
     private void FixedUpdate()
     {
         if (objectGrabPointTransform != null)
         {
             if (PlayerPickAndDrop.Instance.InHand == false)
                 return;
-            Vector3 newPos = Vector3.Lerp(transform.position, objectGrabPointTransform.position, Time.fixedDeltaTime * 5);
+          
+
+
+            Vector3 newPos = Vector3.Lerp(transform.position, objectGrabPointTransform.position,
+                Time.fixedDeltaTime * 10);
             rb.MovePosition(newPos);
         }
     }

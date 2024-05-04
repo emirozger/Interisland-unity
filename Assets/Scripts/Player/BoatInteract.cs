@@ -9,12 +9,13 @@ using UnityEngine.Experimental.GlobalIllumination;
 public class BoatInteract : MonoBehaviour
 {
     public static BoatInteract Instance;
-    bool inBoat;
+    bool isLookingSteer;
     public bool isDriving;
     private float groundDistance = 0.2f;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask boatMask;
     [SerializeField] private BoatController boatController;
+    [SerializeField] private PlayerPickAndDrop pickAndDrop;
     [SerializeField] private Camera playerFpsCamera;
     [SerializeField] private LayerMask steerLayerMask;
     [SerializeField] private LayerMask anchorSteerMask;
@@ -25,10 +26,10 @@ public class BoatInteract : MonoBehaviour
     public Transform inBoatPlayerPos;
     public Transform cameraRig;
     public Transform driveBoatCameraPos;
-    Rigidbody rb;
-    RaycastHit hit;
+    private Rigidbody rb;
+    private RaycastHit hit;
+    private bool inBoat;
     public bool InBoat => inBoat;
-
 
     private void Awake()
     {
@@ -40,12 +41,16 @@ public class BoatInteract : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         boatController.enabled = false;
     }
-    
+
+  
     void Update()
     {
+        inBoat = Physics.CheckSphere(groundCheck.position, groundDistance, boatMask);
+        if(pickAndDrop.InHand)  return;
+        
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (inBoat)
+            if (isLookingSteer  )
             {
                 if (isDriving)
                 {
@@ -60,10 +65,11 @@ public class BoatInteract : MonoBehaviour
         }
 
         if (isDriving) return;
+        
         if (hit.collider != null)
         {
             hit.collider.GetComponent<Highlight>()?.ToggleHighlight(false);
-            inBoat = false;
+            isLookingSteer = false;
         }
 
         Debug.DrawRay(playerFpsCamera.transform.position, playerFpsCamera.transform.forward * 30, Color.red);
@@ -72,7 +78,7 @@ public class BoatInteract : MonoBehaviour
         {
             hit.collider.GetComponent<Highlight>()?.ToggleHighlight(true);
             print(hit.collider.name);
-            inBoat = true;
+            isLookingSteer = true;
            
         }
         else if ((Physics.Raycast(playerFpsCamera.transform.position, playerFpsCamera.transform.forward, out hit, 2f, anchorSteerMask)))

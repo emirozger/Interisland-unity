@@ -1,7 +1,10 @@
 ﻿public enum ObjectType
 {
     Null,
-    Orange,
+    EmptyCase,
+    OrangeFish,
+    BlueFish,
+    Pineapple,
+    Peach,
     Apple,
-    Banana
 }

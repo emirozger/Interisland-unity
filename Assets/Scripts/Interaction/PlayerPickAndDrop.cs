@@ -57,8 +57,8 @@ public class PlayerPickAndDrop : MonoBehaviour
             }
             else 
             {
-                //yerleştirilebilir alana bakmıyorsam ve elimde obje varsa
-                if (Input.GetKeyDown(KeyCode.E))
+                //yerleştirilebilir alana bakmıyorsam ve elimde obje varsa ve botta değilsem
+                if (Input.GetKeyDown(KeyCode.E) && !BoatInteract.Instance.InBoat)
                     currentObjectGrabbling.Drop(); //drop
                 
             }

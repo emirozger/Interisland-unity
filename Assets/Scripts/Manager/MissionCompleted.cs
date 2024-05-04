@@ -25,14 +25,14 @@ public class MissionCompleted : MonoBehaviour
 
     public TMP_InputField offerInputField;
     public TMP_Text acceptanceText;
-
-
-
+    [SerializeField] private int npcTradeDeclineDelay = 20;
     [SerializeField] private float npcPrice = 15.0f;
 
-    private readonly float[] minOfferPrices = { 1f, 2f, 5f, 1f }; // Minimum offer price for each object type
-    private readonly float[] maxOfferPrices = { 5f, 7f, 10f, 6f }; // Maximum offer price for each object type
-
+    private float minAnotherOfferPrice = 1f;
+    private float maxAnotherOfferPrice = 10f;
+    private bool canItSell = true;
+    private int offerDeclineCount = 0;
+    
     [System.Serializable]
     public class ProbabilityRange
     {
@@ -109,6 +109,7 @@ public class MissionCompleted : MonoBehaviour
     }
     public void AnotherOfferDecline()
     {
+        StartCoroutine(AnotherOfferDelay(npcTradeDeclineDelay));
         anotherOfferPanel.SetActive(false);
         mouseLook.enabled = true;
     }
@@ -119,13 +120,28 @@ public class MissionCompleted : MonoBehaviour
             acceptanceText.text = "You have no object in your hand!";
             yield break;
         }
-        int offerPrice = (int)Random.Range(minOfferPrices[(int)requiredObjectType], maxOfferPrices[(int)requiredObjectType]);
+        if(!canItSell) yield break;
+        int offerPrice = (int)Random.Range(minAnotherOfferPrice, maxAnotherOfferPrice);
         anotherOfferInfoText.text = $"Your object is not {requiredObjectType}! I give you {offerPrice}";
         anotherOfferPanel.SetActive(true);
         mouseLook.enabled = false;
-
+       
     }
-
+ 
+    
+    private IEnumerator AnotherOfferDelay(int delay)
+    {
+        offerDeclineCount++;
+        
+        if (offerDeclineCount == 3)
+        {
+            canItSell = false;
+            yield return new WaitForSeconds(delay);
+            canItSell = true;
+            offerDeclineCount = 0;
+        }
+        
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (player != null)

@@ -207,7 +207,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &1486242681979667388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,6 +229,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   orientation: {fileID: 8728861880147535155}
+  playerRB: {fileID: 2128621181}
+  shipRB: {fileID: 0}
+  boatMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  PlayerInBoat: 0
 --- !u!114 &9070207624050728381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,7 +268,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3732965502371162942}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36e3d37bd07ea0b4a98456e5ae3493aa, type: 3}
   m_Name: 
@@ -279,7 +285,7 @@ MonoBehaviour:
   newMission: {fileID: 0}
   instantiatePrefab: {fileID: 7734996272164211611, guid: b9afaefdfe126944abafa7d00d6156a0,
     type: 3}
-  instantiatePos: {fileID: 0}
+  instantiateTransform: {fileID: 0}
 --- !u!114 &2128621186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,6 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ee6c86e089fa474c96e7cace641fcbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDriving: 0
   groundCheck: {fileID: 1711342374275398380}
   boatMask:
     serializedVersion: 2
@@ -301,6 +308,10 @@ MonoBehaviour:
   steerLayerMask:
     serializedVersion: 2
     m_Bits: 2048
+  anchorSteerMask:
+    serializedVersion: 2
+    m_Bits: 8192
+  steerHighlight: {fileID: 0}
   OnEnterDriveBoat:
     m_PersistentCalls:
       m_Calls:
@@ -311,30 +322,6 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CompassController, Assembly-CSharp
-        m_MethodName: SetCompass
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -355,21 +342,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CompassController, Assembly-CSharp
-        m_MethodName: SetCompass
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8728861880147535155}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   inBoatPlayerPos: {fileID: 0}
   cameraRig: {fileID: 0}
-  boatCamera: {fileID: 0}
+  driveBoatCameraPos: {fileID: 0}
 --- !u!1 &4011281794574660927
 GameObject:
   m_ObjectHideFlags: 0

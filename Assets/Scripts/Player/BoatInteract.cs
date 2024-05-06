@@ -19,7 +19,11 @@ public class BoatInteract : MonoBehaviour
     [SerializeField] private Camera playerFpsCamera;
     [SerializeField] private LayerMask steerLayerMask;
     [SerializeField] private LayerMask anchorSteerMask;
+    [SerializeField] private LayerMask npcInteractLayerMask;
+
     [SerializeField] private Highlight steerHighlight;
+    [SerializeField] private DialogueManager dialogueManager;
+
     public UnityEvent OnEnterDriveBoat;
     public UnityEvent OnExitDriveBoat;
 
@@ -97,6 +101,7 @@ public class BoatInteract : MonoBehaviour
                         CameraController.Instance.enabled = true;
                     }));
         }
+       
     }
 
     public void EnterDriveHandler()

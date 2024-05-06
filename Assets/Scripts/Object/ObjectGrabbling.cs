@@ -25,6 +25,7 @@ public class ObjectGrabbling : MonoBehaviour
             this.rb.isKinematic = true;
             this.collider.enabled = false;
             this.transform.parent = null;
+            this.rb.interpolation = RigidbodyInterpolation.Interpolate;
             PlayerPickAndDrop.Instance.inHandObjType = this.thisObjType;
             ObjectSorting.Instance.RemoveItem(this.gameObject);
             print(this.thisObjType);
@@ -36,6 +37,7 @@ public class ObjectGrabbling : MonoBehaviour
             this.rb.useGravity = false;
             this.rb.isKinematic = true;
             this.collider.enabled = false;
+            this.rb.interpolation = RigidbodyInterpolation.Interpolate;
             PlayerPickAndDrop.Instance.inHandObjType = this.thisObjType;
             print(this.thisObjType);
         }
@@ -60,6 +62,7 @@ public class ObjectGrabbling : MonoBehaviour
         this.rb.isKinematic = true;
         this.collider.enabled = true;
         this.wasPlaced = true;
+        this.rb.interpolation = RigidbodyInterpolation.None;
         PlayerPickAndDrop.Instance.InHand = false;
         PlayerPickAndDrop.Instance.inHandObjType = ObjectType.Null;
         ObjectSorting.Instance.AddItem(this.gameObject);

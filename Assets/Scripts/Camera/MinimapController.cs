@@ -1,6 +1,5 @@
 using System;
 using DG.Tweening;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class MinimapController : MonoBehaviour
@@ -24,8 +23,7 @@ public class MinimapController : MonoBehaviour
         newPos.y = transform.position.y;
         transform.position = newPos;
         
-        var targetRot = Quaternion.Euler(90f,player.eulerAngles.y,0f);
-        transform.rotation = Quaternion.Lerp(transform.rotation,targetRot, Time.deltaTime*2);
+        transform.rotation=Quaternion.Euler(90f,player.eulerAngles.y,0f);
     }
 
     private void Update()
@@ -34,16 +32,16 @@ public class MinimapController : MonoBehaviour
         {
             if (!isMinimapMaximized)
             {
-                this.GetComponent<Camera>().DOOrthoSize(85, 2);
+                this.GetComponent<Camera>().DOOrthoSize(250, 2);
                 minimapBorder.transform.position = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-                minimapBorder.GetChild(0).localScale *= 2;
+                minimapBorder.GetChild(0).GetChild(0).localScale *= 2;
                 isMinimapMaximized = true;
             }
             else
             {
-                this.GetComponent<Camera>().DOOrthoSize(15, 2);
-                minimapBorder.localPosition = minimapBorderStartPos;
-                minimapBorder.GetChild(0).localScale /= 2;
+                this.GetComponent<Camera>().DOOrthoSize(10, 2);
+                minimapBorder.localPosition = minimapBorder.localPosition;
+                minimapBorder.GetChild(0).GetChild(0).localScale /= 2;
                 isMinimapMaximized = false;
             }
         }

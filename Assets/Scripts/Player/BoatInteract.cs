@@ -19,11 +19,7 @@ public class BoatInteract : MonoBehaviour
     [SerializeField] private Camera playerFpsCamera;
     [SerializeField] private LayerMask steerLayerMask;
     [SerializeField] private LayerMask anchorSteerMask;
-    [SerializeField] private LayerMask npcInteractLayerMask;
-    [SerializeField] private CompassController compassController;
     [SerializeField] private Highlight steerHighlight;
-    [SerializeField] private DialogueManager dialogueManager;
-
     public UnityEvent OnEnterDriveBoat;
     public UnityEvent OnExitDriveBoat;
 
@@ -101,14 +97,12 @@ public class BoatInteract : MonoBehaviour
                         CameraController.Instance.enabled = true;
                     }));
         }
-       
     }
 
     public void EnterDriveHandler()
     {
         steerHighlight.ToggleHighlight(false);
         Destroy(this.GetComponent<CapsuleCollider>());
-        compassController.SetCompass(boatController.transform);
         rb.isKinematic = true;
         this.transform.parent = inBoatPlayerPos;
         this.transform.localPosition = Vector3.zero;
@@ -127,7 +121,6 @@ public class BoatInteract : MonoBehaviour
 
     public void ExitDriveHandler()
     {
-        compassController.SetCompass(PlayerMovement.Instance.orientation);
         rb.isKinematic = false;
         this.AddComponent<CapsuleCollider>();
         this.transform.parent = null;

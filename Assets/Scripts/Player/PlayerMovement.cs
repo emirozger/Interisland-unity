@@ -1,7 +1,4 @@
-using System;
 using DG.Tweening;
-using Unity.Mathematics;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -26,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask climbMask;
     public bool PlayerInBoat;
 
-    [Space(20)] [SerializeField] private Transform orientation;
+    [Space(20)] [SerializeField] public Transform orientation;
 
     private bool isClimbing;
     private bool isGrounded;
@@ -66,7 +63,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
     void Update()
     {
         isClimbing = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit,
@@ -75,15 +71,15 @@ public class PlayerMovement : MonoBehaviour
         if (isClimbing && Input.GetKeyDown(KeyCode.Space) && hit.collider != null)
             transform.DOLocalMove(climbPoint.position, 2f)
                 .OnComplete((() => transform.DOLocalMove(climbEndPoint.position, 2f)));
-        
+
         PlayerInBoat = Physics.CheckSphere(groundCheck.position, groundDistance * 2, boatMask);
-        
+
         input.x = Input.GetAxis("Horizontal");
         input.y = Input.GetAxis("Vertical");
 
         Vector3 move = orientation.right * input.x + orientation.forward * input.y;
 
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask );
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         if ((isGrounded) && velocity.y < 0)
         {
             velocity.y = -2f;

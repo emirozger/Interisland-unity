@@ -16,6 +16,8 @@ public class CameraController : MonoBehaviour
 
     private float xRotation = 0f;
     private float yRotation = 0f;
+    
+    private bool mouseLookEnabled = false;
 
     private void Awake()
     {
@@ -26,6 +28,11 @@ public class CameraController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        //Invoke("ActivateMouseLook", 4);
+    }
+    private void ActivateMouseLook()
+    {
+        mouseLookEnabled = true;
     }
     public void ShowCursor()
     {
@@ -37,13 +44,12 @@ public class CameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-    void Update()
-    {
-       
-    }
+  
 
     private void LateUpdate()
     {
+         //if (!mouseLookEnabled) return;
+        
         Vector3 desiredPosition = target.position + offset;
         //Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed*Time.fixedDeltaTime);
         transform.position = desiredPosition;
@@ -53,6 +59,7 @@ public class CameraController : MonoBehaviour
 
     private void HandleMouseLook()
     {
+        //if (!mouseLookEnabled) return;
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 

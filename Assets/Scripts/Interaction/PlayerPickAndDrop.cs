@@ -6,7 +6,7 @@ public class PlayerPickAndDrop : MonoBehaviour
 
     public ObjectGrabbling currentObjectGrabbling;
     public ObjectType inHandObjType;
-
+    public GameObject objectToHand;
     [Header("Interaction Settings")] [SerializeField]
     private GameObject interactionPanel;
 
@@ -15,8 +15,8 @@ public class PlayerPickAndDrop : MonoBehaviour
     [SerializeField] private LayerMask placeableLayer;
     [SerializeField] private LayerMask saleableLayer;
     
-    [SerializeField] private Transform objectGrabPointTransform;
-
+    [SerializeField] public Transform objectGrabPointTransform;
+    public GameObject inHandObject;
 
     private const int RAY_DISTANCE = 10;
     private Transform cameraMain;
@@ -59,7 +59,11 @@ public class PlayerPickAndDrop : MonoBehaviour
             {
                 //yerleştirilebilir alana bakmıyorsam ve elimde obje varsa ve botta değilsem
                 if (Input.GetKeyDown(KeyCode.E) && !BoatInteract.Instance.InBoat)
-                    currentObjectGrabbling.Drop(); //drop
+                    if (currentObjectGrabbling!=null)
+                    {
+                        currentObjectGrabbling.Drop(); //drop
+                        currentObjectGrabbling = null;
+                    }
                 
             }
 

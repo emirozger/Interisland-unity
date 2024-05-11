@@ -20,9 +20,9 @@ public class ObjectGrabbling : MonoBehaviour
         if (this.wasPlaced && PlayerPickAndDrop.Instance.InHand == false)
         {
             this.objectGrabPointTransform = objectGrabPointTransform;
-            this.transform.parent = objectGrabPointTransform;
-            this.transform.localPosition = Vector3.zero;
-            this.transform.localRotation = Quaternion.identity;
+           // this.transform.parent = objectGrabPointTransform;
+            //this.transform.localPosition = Vector3.zero;
+            this.transform.localRotation = Quaternion.Euler(-90,90,0);
             PlayerPickAndDrop.Instance.InHand = true;
             PlayerPickAndDrop.Instance.inHandObject = this.gameObject;
             this.rb.useGravity = false;
@@ -39,9 +39,9 @@ public class ObjectGrabbling : MonoBehaviour
         if (!this.wasPlaced && PlayerPickAndDrop.Instance.InHand == false)
         {
             this.objectGrabPointTransform = objectGrabPointTransform;
-            this.transform.parent = objectGrabPointTransform;
-            this.transform.localPosition = Vector3.zero;
-            this.transform.localRotation = Quaternion.identity;
+            //this.transform.parent = objectGrabPointTransform;
+            //this.transform.localPosition = Vector3.zero;
+            this.transform.localRotation = Quaternion.Euler(-90,90,0);
             PlayerPickAndDrop.Instance.inHandObject = this.gameObject;
             PlayerPickAndDrop.Instance.InHand = true;
             this.rb.useGravity = false;
@@ -86,8 +86,9 @@ public class ObjectGrabbling : MonoBehaviour
 
     private void Update()
     {
-        if (!PlayerPickAndDrop.Instance.InHand && !PlayerPickAndDrop.Instance.inHandObject == this.gameObject)
-            return;
+        if (!PlayerPickAndDrop.Instance.InHand ) return;
+        if (PlayerPickAndDrop.Instance.inHandObject != this.gameObject) return;
+       
         float rotationAmount = Input.GetKey(KeyCode.Q) ? -100 * Time.deltaTime :
             Input.GetKey(KeyCode.R) ? 100 * Time.deltaTime : 0;
         this.transform.Rotate(Vector3.right, rotationAmount);
@@ -95,7 +96,7 @@ public class ObjectGrabbling : MonoBehaviour
 
     private void FixedUpdate()
     {
-/*
+
         if (this.objectGrabPointTransform != null)
         {
             if (PlayerPickAndDrop.Instance.InHand == false)
@@ -105,6 +106,6 @@ public class ObjectGrabbling : MonoBehaviour
                 Time.fixedDeltaTime * 10);
             this.rb.MovePosition(newPos);
         }
-        */
+        
     }
 }

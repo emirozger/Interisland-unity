@@ -21,7 +21,6 @@ public class DialogueManager : MonoBehaviour
     private List<DialogueString> dialogueList;
     private bool optionSelected = false;
     [Header("Player")] [SerializeField] private PlayerMovement fpsController;
-    [SerializeField] private Transform playerCameraTransform;
     [SerializeField] private CameraController mouseLook;
 
     private int currentDialogueIndex = 0;
@@ -33,8 +32,35 @@ public class DialogueManager : MonoBehaviour
     private void Start()
     {
         dialogueParent.SetActive(false);
-        playerCameraTransform = Camera.main.transform;
+        playerCamera = Camera.main;
         fpsController = this.GetComponent<PlayerMovement>();
+    }
+
+    [SerializeField] private LayerMask npcLayerMask;
+    [SerializeField] private Camera playerCamera;
+    private RaycastHit hit;
+
+    private void Update()
+    {
+        
+
+        if (hit.collider != null)
+            hit.collider.GetComponent<Highlight>()?.ToggleHighlight(false);
+
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 5f, npcLayerMask))
+        {
+            if (hit.collider == null) return;
+            var dialogueTrigger = hit.collider.GetComponent<DialogueTrigger>();
+            if (Input.GetKeyDown(KeyCode.Space) && dialogueTrigger != null && dialogueTrigger.hasSpoken)  isSpacePressed = true;
+            if (dialogueTrigger.hasSpoken) return;
+            dialogueTrigger.npcHighlight.ToggleHighlight(true);
+            if (!Input.GetKeyDown(KeyCode.E)) return;
+            dialogueTrigger.npcHighlight.ToggleHighlight(false);
+            DialogueStart(dialogueTrigger.dialogueStrings, dialogueTrigger.npcTransform); //++
+            dialogueTrigger.hasSpoken = true; //++
+            dialogueTrigger.animator.SetTrigger("Talking"); //++
+            instantiateTransform = dialogueTrigger.transform; //++
+        }
     }
 
     public void InstantiateNPCPrefab(GameObject npcPrefab)
@@ -44,14 +70,14 @@ public class DialogueManager : MonoBehaviour
 
     public void InstantiateObj(GameObject obj)
     {
-        var newPos = new Vector3(instantiateTransform.position.x + 2.5f, instantiateTransform.position.y+.5f,
+        var newPos = new Vector3(instantiateTransform.position.x + 2.5f, instantiateTransform.position.y + .5f,
             instantiateTransform.position.z);
         Instantiate(obj, newPos, instantiateTransform.rotation);
     }
 
     public void CameraShake()
     {
-        playerCameraTransform.DOShakeRotation(.5f, new Vector3(5, 5, 5), 100, 50);
+        playerCamera.transform.DOShakeRotation(.5f, new Vector3(5, 5, 5), 100, 50);
     }
 
     public void DialogueStart(List<DialogueString> dialogueStrings, Transform npcTransform)
@@ -59,8 +85,7 @@ public class DialogueManager : MonoBehaviour
         dialogueParent.SetActive(true);
         fpsController.enabled = false;
         mouseLook.enabled = false;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        mouseLook.ShowCursor();
 
         StartCoroutine(TurnCameraTowardsNPC(npcTransform));
         dialogueList = dialogueStrings;
@@ -117,6 +142,7 @@ public class DialogueManager : MonoBehaviour
             }
 
             line.OnEndDialogue?.Invoke();
+            isSpacePressed = false;
             optionSelected = false;
         }
 
@@ -131,13 +157,22 @@ public class DialogueManager : MonoBehaviour
         currentDialogueIndex = indexJump;
     }
 
+    private bool isSpacePressed = false;
+
     private IEnumerator TypeText(string text)
     {
         dialogueText.text = "";
         foreach (char letter in text.ToCharArray())
         {
             dialogueText.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
+            if (isSpacePressed)
+            {
+                yield return new WaitForSeconds(-1);
+            }
+            else
+            {
+                yield return new WaitForSeconds(typingSpeed);
+            }
         }
 
         if (!dialogueList[currentDialogueIndex].isQuestion)
@@ -165,26 +200,25 @@ public class DialogueManager : MonoBehaviour
         dialogueParent.SetActive(false);
 
         mouseLook.enabled = true;
-        playerCameraTransform.localRotation = Quaternion.Euler(0, 0, 0);
+        playerCamera.transform.localRotation = Quaternion.Euler(0, 0, 0);
         fpsController.enabled = true;
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
+        mouseLook.HideCursor();
     }
 
     private IEnumerator TurnCameraTowardsNPC(Transform npcTransform)
     {
-        Quaternion startRotation = playerCameraTransform.rotation;
-        Quaternion targetRotation = Quaternion.LookRotation(npcTransform.position - playerCameraTransform.position);
+        Quaternion startRotation = playerCamera.transform.rotation;
+        Quaternion targetRotation = Quaternion.LookRotation(npcTransform.position - playerCamera.transform.position);
 
         float elapsedTime = 0f;
 
         while (elapsedTime < 1f)
         {
-            playerCameraTransform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime);
+            playerCamera.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime);
             elapsedTime += Time.deltaTime * turnSpeed;
             yield return null;
         }
 
-        playerCameraTransform.rotation = targetRotation;
+        playerCamera.transform.rotation = targetRotation;
     }
 }

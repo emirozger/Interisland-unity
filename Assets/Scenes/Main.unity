@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.030387998, g: 0.12544954, b: 0.32732958, a: 1}
+  m_IndirectSpecularColor: {r: 0.032011017, g: 0.096572, b: 0.23586173, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -98,8 +98,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 68dbe27ad864e7e48a055f1eeabbf9b2,
-    type: 2}
+  m_LightingDataAsset: {fileID: 0}
   m_LightingSettings: {fileID: 4890085278179872738, guid: c638eb31bc50fd64ca2b9d8d2b1479fe,
     type: 2}
 --- !u!196 &4
@@ -924,8 +923,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 200, y: -45}
-  m_SizeDelta: {x: 238.9941, y: 44.8114}
+  m_AnchoredPosition: {x: 203, y: -44}
+  m_SizeDelta: {x: 200, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &104021678
 MonoBehaviour:
@@ -949,7 +948,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -996,14 +995,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8490566, g: 0.8490566, b: 0.8490566, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -317227703, guid: ba8bd76a11372834dae6d24530a6153b, type: 3}
+  m_Sprite: {fileID: 772138828, guid: ba8bd76a11372834dae6d24530a6153b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1310,7 +1309,17 @@ PrefabInstance:
     - target: {fileID: 10186719791958839, guid: d73580dc28f2dd84a9ef28b53e1756be,
         type: 3}
       propertyPath: m_Lightmapping
-      value: 2
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1117446742166013168, guid: d73580dc28f2dd84a9ef28b53e1756be,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 22.641
+      objectReference: {fileID: 0}
+    - target: {fileID: 2524859615899442790, guid: d73580dc28f2dd84a9ef28b53e1756be,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3443973471110947762, guid: d73580dc28f2dd84a9ef28b53e1756be,
         type: 3}
@@ -1371,6 +1380,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3443973471325296749, guid: d73580dc28f2dd84a9ef28b53e1756be,
+        type: 3}
+      propertyPath: m_Range
+      value: 9.968262
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d73580dc28f2dd84a9ef28b53e1756be, type: 3}
@@ -1910,6 +1924,43 @@ Light:
     type: 3}
   m_PrefabInstance: {fileID: 144831739}
   m_PrefabAsset: {fileID: 0}
+--- !u!84 &291108246
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WaterDepthMap
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1024
+  m_Height: 1024
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!108 &299421478 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 1436565507604297330, guid: d73580dc28f2dd84a9ef28b53e1756be,
@@ -2068,6 +2119,12 @@ MonoBehaviour:
   CompassImage: {fileID: 405899996}
   orientation: {fileID: 1457567489}
   CompassDirectionText: {fileID: 76327110}
+--- !u!108 &389720545 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 3443973472516340010, guid: d73580dc28f2dd84a9ef28b53e1756be,
+    type: 3}
+  m_PrefabInstance: {fileID: 144831739}
+  m_PrefabAsset: {fileID: 0}
 --- !u!108 &389790473 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 24739599551186481, guid: d73580dc28f2dd84a9ef28b53e1756be,
@@ -3722,14 +3779,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9811321, g: 0.8295002, b: 0.51370597, a: 0.50980395}
+  m_Color: {r: 1, g: 0.95330584, b: 0.8537736, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -317227703, guid: ba8bd76a11372834dae6d24530a6153b, type: 3}
+  m_Sprite: {fileID: -1359336754, guid: ba8bd76a11372834dae6d24530a6153b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3999,8 +4056,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -200, y: -45}
-  m_SizeDelta: {x: 238.9941, y: 44.8114}
+  m_AnchoredPosition: {x: -197, y: -44}
+  m_SizeDelta: {x: 200, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &885032825
 MonoBehaviour:
@@ -4024,7 +4081,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -4071,14 +4128,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8490566, g: 0.8490566, b: 0.8490566, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -317227703, guid: ba8bd76a11372834dae6d24530a6153b, type: 3}
+  m_Sprite: {fileID: 772138828, guid: ba8bd76a11372834dae6d24530a6153b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5032,43 +5089,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1215304862}
   m_CullTransparentMesh: 1
---- !u!84 &1219426991
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: WaterDepthMap
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1024
-  m_Height: 1024
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &1231629011
 GameObject:
   m_ObjectHideFlags: 0
@@ -6984,6 +7004,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1215304864}
     - target: {fileID: 2128621182, guid: 76f6a4ba786528f4595b7b65d5047a03, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 896777332}
+    - target: {fileID: 2128621182, guid: 76f6a4ba786528f4595b7b65d5047a03, type: 3}
       propertyPath: option1Button
       value: 
       objectReference: {fileID: 729583372}
@@ -6995,6 +7019,10 @@ PrefabInstance:
       propertyPath: dialogueParent
       value: 
       objectReference: {fileID: 29967873}
+    - target: {fileID: 2128621182, guid: 76f6a4ba786528f4595b7b65d5047a03, type: 3}
+      propertyPath: npcLayerMask.m_Bits
+      value: 65536
+      objectReference: {fileID: 0}
     - target: {fileID: 2128621182, guid: 76f6a4ba786528f4595b7b65d5047a03, type: 3}
       propertyPath: playerCameraTransform
       value: 
@@ -7027,6 +7055,10 @@ PrefabInstance:
       propertyPath: driveBoatCameraPos
       value: 
       objectReference: {fileID: 1732387248}
+    - target: {fileID: 2128621196, guid: 76f6a4ba786528f4595b7b65d5047a03, type: 3}
+      propertyPath: playerMoneyText
+      value: 
+      objectReference: {fileID: 8291917481664542440}
     - target: {fileID: 1486242681979667388, guid: 76f6a4ba786528f4595b7b65d5047a03,
         type: 3}
       propertyPath: shipRB
@@ -7380,10 +7412,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.84272003
+  m_Radius: 1.298172
   m_Height: 3.1319108
   m_Direction: 1
-  m_Center: {x: 0, y: 1.0659554, z: 0.17656708}
+  m_Center: {x: 0, y: 1.0659554, z: 0.63201904}
 --- !u!1001 &1567539391
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7561,7 +7593,10 @@ MonoBehaviour:
   transitionToDayDuration: 5
   directionalLight: {fileID: 959502037}
   levelLights:
-  - {fileID: 1621884151}
+  - {fileID: 389720545}
+  - {fileID: 1630233847}
+  - {fileID: 1686057053}
+  - {fileID: 1681889744}
   - {fileID: 1090931}
   - {fileID: 2921043}
   - {fileID: 16276948}
@@ -7639,6 +7674,7 @@ MonoBehaviour:
   - {fileID: 1513137014}
   - {fileID: 1533685124}
   - {fileID: 1586825913}
+  - {fileID: 1621884151}
   - {fileID: 1634283298}
   - {fileID: 1664538604}
   - {fileID: 1676908974}
@@ -7697,6 +7733,12 @@ Transform:
 --- !u!108 &1621884151 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 336979486639665947, guid: d73580dc28f2dd84a9ef28b53e1756be,
+    type: 3}
+  m_PrefabInstance: {fileID: 144831739}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &1630233847 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 3443973472075244286, guid: d73580dc28f2dd84a9ef28b53e1756be,
     type: 3}
   m_PrefabInstance: {fileID: 144831739}
   m_PrefabAsset: {fileID: 0}
@@ -8043,6 +8085,18 @@ CanvasRenderer:
 --- !u!108 &1676908974 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 3443973471325296749, guid: d73580dc28f2dd84a9ef28b53e1756be,
+    type: 3}
+  m_PrefabInstance: {fileID: 144831739}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &1681889744 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 10186719791958839, guid: d73580dc28f2dd84a9ef28b53e1756be,
+    type: 3}
+  m_PrefabInstance: {fileID: 144831739}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &1686057053 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 3443973473213412445, guid: d73580dc28f2dd84a9ef28b53e1756be,
     type: 3}
   m_PrefabInstance: {fileID: 144831739}
   m_PrefabAsset: {fileID: 0}
@@ -9977,7 +10031,7 @@ GameObject:
   - component: {fileID: 7601677262143036027}
   - component: {fileID: 8291917481664542440}
   m_Layer: 5
-  m_Name: Gold Counter Text
+  m_Name: PlayerMoney
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10184,8 +10238,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -15207,8 +15261,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 12
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 58d2699121c6a814cae1fa1d4f6c3056, type: 2}
-  m_sharedMaterial: {fileID: 5086310998222734830, guid: 58d2699121c6a814cae1fa1d4f6c3056,
+  m_fontAsset: {fileID: 11400000, guid: 0aa5ecd371fabf54c8a2e6ea6cf9cc01, type: 2}
+  m_sharedMaterial: {fileID: -8616940343071646457, guid: 0aa5ecd371fabf54c8a2e6ea6cf9cc01,
     type: 2}
   m_fontSharedMaterials:
   - {fileID: 5086310998222734830, guid: 58d2699121c6a814cae1fa1d4f6c3056, type: 2}
@@ -15216,8 +15270,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

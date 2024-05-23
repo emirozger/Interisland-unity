@@ -46,7 +46,7 @@ public class PlayerPickAndDrop : MonoBehaviour
                 {
                     //yerleştirilebilire bakıyorsam && elimde obje varsa && area full degilse
                     OpenInteractVisual();
-                    if (Input.GetKeyDown(KeyCode.E))
+                    if (Input.GetMouseButtonDown(0))
                     {
                         currentObjectGrabbling.Place(hit.collider.transform); //place
                         currentObjectGrabbling = null;
@@ -58,7 +58,7 @@ public class PlayerPickAndDrop : MonoBehaviour
             else 
             {
                 //yerleştirilebilir alana bakmıyorsam ve elimde obje varsa ve botta değilsem
-                if (Input.GetKeyDown(KeyCode.E) && !BoatInteract.Instance.InBoat)
+                if (Input.GetMouseButtonDown(0) && !BoatInteract.Instance.InBoat)
                     if (currentObjectGrabbling!=null)
                     {
                         currentObjectGrabbling.Drop(); //drop
@@ -75,7 +75,7 @@ public class PlayerPickAndDrop : MonoBehaviour
             OpenInteractVisual();
             if (hit.transform.TryGetComponent(out currentObjectGrabbling)) //var ise objectgrabbling atandı
             {
-                if (Input.GetKeyDown(KeyCode.E) && !inHand)
+                if (Input.GetMouseButtonDown(0) && !inHand)
                     currentObjectGrabbling.Grab(objectGrabPointTransform); //e key object grabb
             }
         }

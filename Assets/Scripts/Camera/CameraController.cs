@@ -1,22 +1,25 @@
+using System;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     public static CameraController Instance;
-    
-    [Header("Camera Movement Settings")]
-    [SerializeField] private Transform target;
+
+    [Header("Camera Movement Settings")] [SerializeField]
+    private Transform target;
+
     [SerializeField] private float smoothSpeed = 0.125f;
     [SerializeField] private Vector3 offset;
 
-    [Header("Mouse Look Settings")]
-    [SerializeField] private float mouseSensitivity = 100f;
+    [Header("Mouse Look Settings")] [SerializeField]
+    private float mouseSensitivity = 100f;
+
     [SerializeField] private Transform playerMesh;
     [SerializeField] private Transform orientation;
 
     private float xRotation = 0f;
     private float yRotation = 0f;
-    
+
     private bool mouseLookEnabled = false;
 
     private void Awake()
@@ -26,30 +29,41 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         //Invoke("ActivateMouseLook", 4);
     }
+
+    private void OnEnable()
+    {
+        HideCursor();
+    }
+
+    private void OnDisable()
+    {
+        ShowCursor();
+    }
+
     private void ActivateMouseLook()
     {
         mouseLookEnabled = true;
     }
+
     public void ShowCursor()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
+
     public void HideCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-  
+
 
     private void LateUpdate()
     {
-         //if (!mouseLookEnabled) return;
-        
+        //if (!mouseLookEnabled) return;
+
         Vector3 desiredPosition = target.position + offset;
         //Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed*Time.fixedDeltaTime);
         transform.position = desiredPosition;

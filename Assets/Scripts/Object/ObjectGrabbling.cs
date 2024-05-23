@@ -3,11 +3,20 @@ using UnityEngine;
 
 public class ObjectGrabbling : MonoBehaviour
 {
+    #region Object Settings
     public ObjectType thisObjType;
     private Rigidbody rb;
     [SerializeField] public Transform objectGrabPointTransform;
     private Collider collider;
     private bool wasPlaced = false;
+    #endregion
+    
+    #region Object Rotation Settings
+    private float targetRotationX = -90f;
+    private float currentRotationX = 0f;
+    private const float SCROLL_SPEED = 10f;
+    private const float ROTATION_SMOOTHING = 5f;
+    #endregion
 
     private void Awake()
     {
@@ -56,9 +65,7 @@ public class ObjectGrabbling : MonoBehaviour
     public void Drop()
     {
         if (this.rb == null)
-        {
             return;
-        }
 
         this.rb.useGravity = true;
         this.rb.isKinematic = false;
@@ -83,29 +90,38 @@ public class ObjectGrabbling : MonoBehaviour
         PlayerPickAndDrop.Instance.inHandObjType = ObjectType.Null;
         ObjectSorting.Instance.AddItem(this.gameObject);
     }
+    
+   
 
     private void Update()
     {
-        if (!PlayerPickAndDrop.Instance.InHand ) return;
+        if (!PlayerPickAndDrop.Instance.InHand) return;
         if (PlayerPickAndDrop.Instance.inHandObject != this.gameObject) return;
-       
-        float rotationAmount = Input.GetKey(KeyCode.Q) ? -100 * Time.deltaTime :
-            Input.GetKey(KeyCode.R) ? 100 * Time.deltaTime : 0;
-        this.transform.Rotate(Vector3.right, rotationAmount);
-    }
-
-    private void FixedUpdate()
-    {
-
-        if (this.objectGrabPointTransform != null)
+        
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        
+        if (scrollInput != 0)
         {
-            if (PlayerPickAndDrop.Instance.InHand == false)
-                return;
-
-            Vector3 newPos = Vector3.Lerp(this.transform.position, objectGrabPointTransform.position,
-                Time.fixedDeltaTime * 10);
-            this.rb.MovePosition(newPos);
+            if (scrollInput > 0f)
+                targetRotationX += 90f * SCROLL_SPEED * Time.deltaTime;
+            else if (scrollInput < 0f)
+                targetRotationX -= 90f * SCROLL_SPEED * Time.deltaTime;
         }
         
+        currentRotationX = Mathf.LerpAngle(currentRotationX, targetRotationX, Time.deltaTime * ROTATION_SMOOTHING);
+        Quaternion targetRotation = Quaternion.Euler(currentRotationX, this.transform.rotation.y, this.transform.rotation.z);
+        this.rb.MoveRotation(targetRotation);
+    }
+    
+    private void FixedUpdate()
+    {
+        if (this.objectGrabPointTransform != null)
+        {
+            if (PlayerPickAndDrop.Instance.InHand == false) 
+                return;
+
+            Vector3 newPos = Vector3.Lerp(this.transform.position, objectGrabPointTransform.position, Time.fixedDeltaTime * 10);
+            this.rb.MovePosition(newPos);
+        }
     }
 }

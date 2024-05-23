@@ -13,8 +13,8 @@ public class MinimapController : MonoBehaviour
     private void Start()
     {
         minimapBorderStartPos = minimapBorder.localPosition;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+       // Cursor.lockState = CursorLockMode.None;
+       // Cursor.visible = true;
     }
 
 

@@ -16,12 +16,7 @@ public class MissionCompleted : MonoBehaviour
     [SerializeField] private GameObject anotherOfferPanel;
     [SerializeField] private TextMeshProUGUI anotherOfferInfoText;
     [SerializeField] private CameraController mouseLook;
-
-    private void Start()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
+   
 
     public TMP_InputField offerInputField;
     public TMP_Text acceptanceText;
@@ -43,11 +38,11 @@ public class MissionCompleted : MonoBehaviour
 
     public List<ProbabilityRange> acceptanceProbabilities = new List<ProbabilityRange>();
 
-    private float CalculateAcceptanceProbability(float offerPrice)
+    private float CalculateAcceptanceProbability(float _offerPrice)
     {
         foreach (var range in acceptanceProbabilities)
         {
-            if (offerPrice >= range.minValue && offerPrice <= range.maxValue)
+            if (_offerPrice >= range.minValue && _offerPrice <= range.maxValue)
             {
                 return range.acceptanceProbability;
             }
@@ -57,12 +52,12 @@ public class MissionCompleted : MonoBehaviour
 
     public void SubmitOffer()
     {
-        float offerPrice;
+        float submitOfferPrice;
 
-        if (float.TryParse(offerInputField.text, out offerPrice))
+        if (float.TryParse(offerInputField.text, out submitOfferPrice))
 
         {
-            if (offerPrice > npcPrice * 2)
+            if (submitOfferPrice > npcPrice * 2)
             {
                 acceptanceText.text = "Invalid offer price!";
                 return;
@@ -72,7 +67,7 @@ public class MissionCompleted : MonoBehaviour
             var random = Random.value;
 
             if (player != null && player.inHandObjType == requiredObjectType)
-                acceptanceProbability = CalculateAcceptanceProbability(offerPrice);
+                acceptanceProbability = CalculateAcceptanceProbability(submitOfferPrice);
 
             Debug.Log($"acceptanceProbability {acceptanceProbability}");
             Debug.Log($"random value= {random}");
@@ -95,6 +90,15 @@ public class MissionCompleted : MonoBehaviour
         }
     }
 
+    public void AnotherOfferDecline()
+    {
+        StartCoroutine(AnotherOfferDelay(npcTradeDeclineDelay));
+        anotherOfferPanel.SetActive(false);
+        mouseLook.enabled = true;
+    }
+
+    private int offerPrice;
+    
     public void AnotherOfferAccept()
     {
         if (player.inHandObjType != ObjectType.Null && player.currentObjectGrabbling != null)
@@ -105,13 +109,7 @@ public class MissionCompleted : MonoBehaviour
         player.currentObjectGrabbling = null;
         anotherOfferPanel.SetActive(false);
         mouseLook.enabled = true;
-        
-    }
-    public void AnotherOfferDecline()
-    {
-        StartCoroutine(AnotherOfferDelay(npcTradeDeclineDelay));
-        anotherOfferPanel.SetActive(false);
-        mouseLook.enabled = true;
+        PlayerMoneyManager.Instance.AddMoney(offerPrice);
     }
     public IEnumerator AnotherOffer(float offerDuration = 1f)
     {
@@ -121,7 +119,7 @@ public class MissionCompleted : MonoBehaviour
             yield break;
         }
         if(!canItSell) yield break;
-        int offerPrice = (int)Random.Range(minAnotherOfferPrice, maxAnotherOfferPrice);
+        offerPrice = (int)Random.Range(minAnotherOfferPrice, maxAnotherOfferPrice);
         anotherOfferInfoText.text = $"Your object is not {requiredObjectType}! I give you {offerPrice}";
         anotherOfferPanel.SetActive(true);
         mouseLook.enabled = false;
@@ -146,6 +144,7 @@ public class MissionCompleted : MonoBehaviour
     {
         if (player != null)
         {
+            player.GetComponent<PlayerPickAndDrop>().enabled = false;
             if (requiredObjectType == player.inHandObjType)
             {
                 // offerInputField.onEndEdit.AddListener(delegate { this.SubmitOffer(); });
@@ -165,6 +164,7 @@ public class MissionCompleted : MonoBehaviour
     {
         if (player != null)
         {
+            player.GetComponent<PlayerPickAndDrop>().enabled = true;
             offerInputField.gameObject.SetActive(false);
 
             //offerInputField.onEndEdit.RemoveAllListeners();
@@ -181,6 +181,7 @@ public class MissionCompleted : MonoBehaviour
             player.inHandObjType = ObjectType.Null;
             player.InHand = false;
             player.currentObjectGrabbling = null;
+            player.GetComponent<PlayerPickAndDrop>().enabled = true;
             if (objectCount == requiredObjectCount)
             {
                 FindObjectOfType<MissionManager>().CompleteMission(missionID);

@@ -56,6 +56,11 @@ public class SaleableObjects : MonoBehaviour, IInteractable
                 playerMoneyManager.SubtractMoney(this.objectPrice);
                 Instantiate(instantiatePrefab, spawnPos.position, Quaternion.Euler(-90, 0, 0));
                 break;
+            case ObjectType.Post:
+                Debug.Log("Buy Post");
+                playerMoneyManager.SubtractMoney(this.objectPrice);
+                Instantiate(instantiatePrefab, spawnPos.position, Quaternion.Euler(-90, 0, 0));
+                break;
             default:
                 Debug.Log("default");
                 break;

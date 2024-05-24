@@ -44,6 +44,9 @@ public class DayAndNightController : MonoBehaviour
             lightIntensities[index] = light.intensity;
             light.intensity = 0;
         }
+        
+        directionalLight.intensity = .7f;
+        RenderSettings.ambientIntensity = 1.0f;
 
         TransitionTweenToMax(); // go to night
         IntensityMultiplierTweenToMin(); // go to night
@@ -72,21 +75,21 @@ public class DayAndNightController : MonoBehaviour
                 foreach (var light in levelLights)
                 {
                     int index = Array.IndexOf(levelLights, light);
-                    light.DOIntensity(lightIntensities[index], transitionToDayDuration)
-                        .SetEase(Ease.InQuint);
+                    light.DOIntensity(lightIntensities[index], transitionToNightDuration)
+                        .SetEase(Ease.InCubic);
                 }
 
-                yield return new WaitForSeconds(transitionToDayDuration);
+                yield return new WaitForSeconds(transitionToNightDuration);
             }
             else
             {
                 foreach (var light in levelLights)
                 {
-                    light.DOIntensity(0f, transitionToNightDuration).SetEase(Ease.InQuint);
+                    light.DOIntensity(0f, transitionToDayDuration).SetEase(Ease.OutQuint);
                 }
 
 
-                yield return new WaitForSeconds(transitionToNightDuration);
+                yield return new WaitForSeconds(transitionToDayDuration);
             }
 
             isDayTime = !isDayTime;

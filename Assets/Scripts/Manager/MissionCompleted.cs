@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class MissionCompleted : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class MissionCompleted : MonoBehaviour
     [SerializeField] private GameObject anotherOfferPanel;
     [SerializeField] private TextMeshProUGUI anotherOfferInfoText;
     [SerializeField] private CameraController mouseLook;
-   
+   [SerializeField] private GameObject wantToSellPanel;
 
     public TMP_InputField offerInputField;
     public TMP_Text acceptanceText;
@@ -27,6 +28,9 @@ public class MissionCompleted : MonoBehaviour
     private float maxAnotherOfferPrice = 10f;
     private bool canItSell = true;
     private int offerDeclineCount = 0;
+    private int offerPrice;
+    private Collider collider;
+    [SerializeField] private Collider behindNpcCollider;
     
     [System.Serializable]
     public class ProbabilityRange
@@ -38,6 +42,21 @@ public class MissionCompleted : MonoBehaviour
 
     public List<ProbabilityRange> acceptanceProbabilities = new List<ProbabilityRange>();
 
+
+    private void Start()
+    {
+        collider = this.GetComponent<Collider>();
+        offerInputField.onValueChanged.AddListener(ValidateInput);
+    }
+
+    private void ValidateInput(string input)
+    {
+        Regex regex = new Regex("^[0-9]*$");
+        if (!regex.IsMatch(input))
+        {
+            offerInputField.text = Regex.Replace(input, "[^0-9]", "");
+        }
+    }
     private float CalculateAcceptanceProbability(float _offerPrice)
     {
         foreach (var range in acceptanceProbabilities)
@@ -77,6 +96,11 @@ public class MissionCompleted : MonoBehaviour
                 objectCount++;
                 CompletedMission(player);
                 offerInputField.gameObject.SetActive(false);
+                mouseLook.enabled = true;
+                mouseLook.HideCursor();
+                player.GetComponent<PlayerMovement>().enabled = true;
+                collider.enabled = false;
+                behindNpcCollider.enabled = true;
                 acceptanceText.text = "";
             }
             else
@@ -90,14 +114,31 @@ public class MissionCompleted : MonoBehaviour
         }
     }
 
+    public void WantToSellAcceptButton()
+    {
+        wantToSellPanel.SetActive(false);
+        offerInputField.gameObject.SetActive(true);
+        mouseLook.ShowCursor();
+        mouseLook.enabled = false;
+        player.GetComponent<PlayerMovement>().enabled = false;
+        player.enabled = false;
+    }
+    public void WantToSellDeclineButton()
+    {
+        wantToSellPanel.SetActive(false);
+        mouseLook.enabled = true;
+        mouseLook.HideCursor();
+        player.enabled = true;
+        player.GetComponent<PlayerMovement>().enabled = true;
+    }
     public void AnotherOfferDecline()
     {
         StartCoroutine(AnotherOfferDelay(npcTradeDeclineDelay));
         anotherOfferPanel.SetActive(false);
-        mouseLook.enabled = true;
+        WantToSellDeclineButton();
     }
 
-    private int offerPrice;
+
     
     public void AnotherOfferAccept()
     {
@@ -109,7 +150,12 @@ public class MissionCompleted : MonoBehaviour
         player.currentObjectGrabbling = null;
         anotherOfferPanel.SetActive(false);
         mouseLook.enabled = true;
+        mouseLook.HideCursor();
+        player.GetComponent<PlayerMovement>().enabled = true;
         PlayerMoneyManager.Instance.AddMoney(offerPrice);
+        collider.enabled = false;
+        behindNpcCollider.enabled = true;
+        
     }
     public IEnumerator AnotherOffer(float offerDuration = 1f)
     {
@@ -123,7 +169,8 @@ public class MissionCompleted : MonoBehaviour
         anotherOfferInfoText.text = $"Your object is not {requiredObjectType}! I give you {offerPrice}";
         anotherOfferPanel.SetActive(true);
         mouseLook.enabled = false;
-       
+        player.GetComponent<PlayerMovement>().enabled = false;
+
     }
  
     
@@ -144,12 +191,17 @@ public class MissionCompleted : MonoBehaviour
     {
         if (player != null)
         {
-            player.GetComponent<PlayerPickAndDrop>().enabled = false;
+            player.enabled = false;
             if (requiredObjectType == player.inHandObjType)
             {
                 // offerInputField.onEndEdit.AddListener(delegate { this.SubmitOffer(); });
                 offerInputField.text = "";
-                offerInputField.gameObject.SetActive(true);
+                wantToSellPanel.SetActive(true);
+                //offerInputField.gameObject.SetActive(true); satmak ister misini aciyoz
+                mouseLook.ShowCursor();
+                player.GetComponent<PlayerMovement>().enabled = false;
+                mouseLook.enabled = false;
+
             }
             else
                 StartCoroutine(AnotherOffer());
@@ -164,9 +216,12 @@ public class MissionCompleted : MonoBehaviour
     {
         if (player != null)
         {
-            player.GetComponent<PlayerPickAndDrop>().enabled = true;
+            wantToSellPanel.SetActive(false);
             offerInputField.gameObject.SetActive(false);
-
+            player.enabled = true;
+            mouseLook.HideCursor();
+            player.GetComponent<PlayerMovement>().enabled = true;
+            mouseLook.enabled = true;
             //offerInputField.onEndEdit.RemoveAllListeners();
 
             acceptanceText.text = "";

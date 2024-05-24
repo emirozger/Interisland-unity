@@ -7,4 +7,5 @@
     Pineapple,
     Peach,
     Apple,
+    Post,
 }

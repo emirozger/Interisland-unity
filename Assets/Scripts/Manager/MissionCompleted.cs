@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using DG.Tweening;
 
 public class MissionCompleted : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class MissionCompleted : MonoBehaviour
     [SerializeField] private TextMeshProUGUI anotherOfferInfoText;
     [SerializeField] private CameraController mouseLook;
    [SerializeField] private GameObject wantToSellPanel;
+   [SerializeField] private GameObject npcAcceptedOfferPanel;
 
     public TMP_InputField offerInputField;
     public TMP_Text acceptanceText;
@@ -68,7 +71,7 @@ public class MissionCompleted : MonoBehaviour
         }
         return 0;
     }
-
+ 
     public void SubmitOffer()
     {
         float submitOfferPrice;
@@ -78,7 +81,7 @@ public class MissionCompleted : MonoBehaviour
         {
             if (submitOfferPrice > npcPrice * 2)
             {
-                acceptanceText.text = "Invalid offer price!";
+                acceptanceText.text = "Degerinden fazla girdin!";
                 return;
             }
 
@@ -91,50 +94,57 @@ public class MissionCompleted : MonoBehaviour
             Debug.Log($"acceptanceProbability {acceptanceProbability}");
             Debug.Log($"random value= {random}");
             if (random < acceptanceProbability)
-            {
-                acceptanceText.text = "NPC accepted the offer!";
+            {          
                 objectCount++;
                 CompletedMission(player);
-                offerInputField.gameObject.SetActive(false);
                 mouseLook.enabled = true;
                 mouseLook.HideCursor();
                 player.GetComponent<PlayerMovement>().enabled = true;
                 collider.enabled = false;
                 behindNpcCollider.enabled = true;
-                acceptanceText.text = "";
+                //acceptanceText.text = "Anlastik!";
+                
+                NpcAcceptedOfferPanelAnim();
+                ClosePanelWithFade(offerInputField.gameObject, 1.5f);
             }
             else
             {
-                acceptanceText.text = "NPC rejected the offer.";
+                acceptanceText.text = "Fiyati begenmedim!";
             }
         }
         else
         {
-            acceptanceText.text = "Invalid offer price!";
+            acceptanceText.text = "";
         }
     }
-
+    private void NpcAcceptedOfferPanelAnim()
+    {
+        npcAcceptedOfferPanel.SetActive(true);
+        DOVirtual.DelayedCall(1.5f,()=> npcAcceptedOfferPanel.SetActive(false));
+    }
     public void WantToSellAcceptButton()
     {
-        wantToSellPanel.SetActive(false);
-        offerInputField.gameObject.SetActive(true);
+       
+        ClosePanelWithFade(wantToSellPanel, 1.5f);
+        OpenPanelWithFade(offerInputField.gameObject);
         mouseLook.ShowCursor();
         mouseLook.enabled = false;
-        player.GetComponent<PlayerMovement>().enabled = false;
+       // player.GetComponent<PlayerMovement>().enabled = false;
         player.enabled = false;
     }
     public void WantToSellDeclineButton()
     {
-        wantToSellPanel.SetActive(false);
+        ClosePanelWithFade(wantToSellPanel, 1.5f);
         mouseLook.enabled = true;
         mouseLook.HideCursor();
         player.enabled = true;
         player.GetComponent<PlayerMovement>().enabled = true;
+        SaleInteract.IsSaleNow = false;
     }
     public void AnotherOfferDecline()
     {
         StartCoroutine(AnotherOfferDelay(npcTradeDeclineDelay));
-        anotherOfferPanel.SetActive(false);
+        ClosePanelWithFade(anotherOfferPanel,.5f);
         WantToSellDeclineButton();
     }
 
@@ -148,7 +158,7 @@ public class MissionCompleted : MonoBehaviour
         player.inHandObjType = ObjectType.Null;
         player.InHand = false;
         player.currentObjectGrabbling = null;
-        anotherOfferPanel.SetActive(false);
+        ClosePanelWithFade(anotherOfferPanel, 1.5f);
         mouseLook.enabled = true;
         mouseLook.HideCursor();
         player.GetComponent<PlayerMovement>().enabled = true;
@@ -167,7 +177,8 @@ public class MissionCompleted : MonoBehaviour
         if(!canItSell) yield break;
         offerPrice = (int)Random.Range(minAnotherOfferPrice, maxAnotherOfferPrice);
         anotherOfferInfoText.text = $"Your object is not {requiredObjectType}! I give you {offerPrice}";
-        anotherOfferPanel.SetActive(true);
+
+        OpenPanelWithFade(anotherOfferPanel);
         mouseLook.enabled = false;
         player.GetComponent<PlayerMovement>().enabled = false;
 
@@ -189,6 +200,11 @@ public class MissionCompleted : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        //Interact();
+    }
+
+    public void Interact()
+    {
         if (player != null)
         {
             player.enabled = false;
@@ -196,12 +212,11 @@ public class MissionCompleted : MonoBehaviour
             {
                 // offerInputField.onEndEdit.AddListener(delegate { this.SubmitOffer(); });
                 offerInputField.text = "";
-                wantToSellPanel.SetActive(true);
+                OpenPanelWithFade(wantToSellPanel);
                 //offerInputField.gameObject.SetActive(true); satmak ister misini aciyoz
                 mouseLook.ShowCursor();
-                player.GetComponent<PlayerMovement>().enabled = false;
+                //player.GetComponent<PlayerMovement>().enabled = false;
                 mouseLook.enabled = false;
-
             }
             else
                 StartCoroutine(AnotherOffer());
@@ -212,12 +227,26 @@ public class MissionCompleted : MonoBehaviour
         }
     }
 
+    private void OpenPanelWithFade(GameObject panel)
+    {
+        panel.transform.localScale = Vector3.one;
+        panel.SetActive(true);
+    }
+    private void ClosePanelWithFade(GameObject panel, float duration)
+    {
+        panel.transform.DOScale(Vector3.zero, duration).From(Vector3.one)
+            .OnComplete(() => panel.SetActive(false));
+
+    }
+
+
+/*
     private void OnTriggerExit(Collider other)
     {
         if (player != null)
         {
-            wantToSellPanel.SetActive(false);
-            offerInputField.gameObject.SetActive(false);
+            ClosePanelWithFade(wantToSellPanel, 1.5f);
+            ClosePanelWithFade(offerInputField.gameObject, 1.5f);
             player.enabled = true;
             mouseLook.HideCursor();
             player.GetComponent<PlayerMovement>().enabled = true;
@@ -227,7 +256,7 @@ public class MissionCompleted : MonoBehaviour
             acceptanceText.text = "";
         }
     }
-
+*/
     public void CompletedMission(PlayerPickAndDrop player)
     {
         if (player != null && player.currentObjectGrabbling != null)

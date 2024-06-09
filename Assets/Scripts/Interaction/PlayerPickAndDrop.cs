@@ -7,14 +7,18 @@ public class PlayerPickAndDrop : MonoBehaviour
     public ObjectGrabbling currentObjectGrabbling;
     public ObjectType inHandObjType;
     public GameObject objectToHand;
-    [Header("Interaction Settings")] [SerializeField]
-    private GameObject interactionPanel;
 
+    [Header("Interaction Settings")]
+    
+    [SerializeField] private GameObject grabInteractionPanel;
+    [SerializeField] private GameObject placeInteractionPanel;
+    [SerializeField] private GameObject rotateInteractionPanel;
     [SerializeField] private GameObject areaFullPanel;
+
+    [Space(30)]
     [SerializeField] private LayerMask pickableLayer;
     [SerializeField] private LayerMask placeableLayer;
-    [SerializeField] private LayerMask saleableLayer;
-    
+
     [SerializeField] public Transform objectGrabPointTransform;
     public GameObject inHandObject;
 
@@ -40,57 +44,75 @@ public class PlayerPickAndDrop : MonoBehaviour
 
         if (inHand)
         {
-            if (Physics.Raycast(cameraMain.transform.position, cameraMain.transform.forward, out hit, RAY_DISTANCE, placeableLayer))
+            if (Physics.Raycast(cameraMain.transform.position, cameraMain.transform.forward, out hit, RAY_DISTANCE,
+                    placeableLayer))
             {
                 if (ObjectSorting.Instance.areaLimit > ObjectSorting.Instance.placedObjList.Count)
                 {
                     //yerleştirilebilire bakıyorsam && elimde obje varsa && area full degilse
-                    OpenInteractVisual();
-                    if (Input.GetMouseButtonDown(0))
+                    OpenPlaceVisual();
+                    if (Input.GetKeyDown(KeyCode.E))
                     {
                         currentObjectGrabbling.Place(hit.collider.transform); //place
+                        PlayerMoneyManager.Instance.GetPlacedArea++;
+                        rotateInteractionPanel.SetActive(false);
                         currentObjectGrabbling = null;
                     }
                 }
                 else
-                    areaFullPanel.SetActive(true);  //area full
+                    areaFullPanel.SetActive(true); //area full
             }
-            else 
+            else
             {
                 //yerleştirilebilir alana bakmıyorsam ve elimde obje varsa ve botta değilsem
                 if (Input.GetMouseButtonDown(0) && !BoatInteract.Instance.InBoat)
-                    if (currentObjectGrabbling!=null)
+                {
+                    if (currentObjectGrabbling != null)
                     {
                         currentObjectGrabbling.Drop(); //drop
                         currentObjectGrabbling = null;
+                        rotateInteractionPanel.SetActive(false);
                     }
-                
+                }
+                  
             }
 
             return; // elimde obje varsa pickable objeye hit atmasın.
         }
 
-        if (Physics.Raycast(cameraMain.transform.position, cameraMain.transform.forward, out hit, RAY_DISTANCE, pickableLayer))
+        if (Physics.Raycast(cameraMain.transform.position, cameraMain.transform.forward, out hit, RAY_DISTANCE,
+                pickableLayer))
         {
-            OpenInteractVisual();
+            OpenGrabVisual();
             if (hit.transform.TryGetComponent(out currentObjectGrabbling)) //var ise objectgrabbling atandı
             {
                 if (Input.GetMouseButtonDown(0) && !inHand)
+                {
                     currentObjectGrabbling.Grab(objectGrabPointTransform); //e key object grabb
+                    rotateInteractionPanel.SetActive(true);
+                }
             }
         }
     }
 
     private void CloseInteractVisual()
     {
-        hit.collider.GetComponent<Highlight>()?.ToggleHighlight(false);
-        interactionPanel.SetActive(false);
+        hit.collider?.GetComponent<Highlight>()?.ToggleHighlight(false);
+        grabInteractionPanel.SetActive(false);
+        placeInteractionPanel.SetActive(false);
         areaFullPanel.SetActive(false);
     }
 
-    private void OpenInteractVisual()
+    private void OpenGrabVisual()
     {
-        hit.collider.GetComponent<Highlight>()?.ToggleHighlight(true);
-        interactionPanel.SetActive(true);
+        hit.collider?.GetComponent<Highlight>()?.ToggleHighlight(true);
+        grabInteractionPanel.SetActive(true);
+        placeInteractionPanel.SetActive(false);
+    }
+    private void OpenPlaceVisual()
+    {
+        hit.collider?.GetComponent<Highlight>()?.ToggleHighlight(true);
+        grabInteractionPanel.SetActive(false);
+        placeInteractionPanel.SetActive(true);
     }
 }

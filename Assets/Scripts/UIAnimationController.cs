@@ -92,6 +92,7 @@ public class UIAnimationController : MonoBehaviour
 
     public void OpenPauseMenu()
     {
+
         PausePanel.transform.DOScale(new Vector3(1, 1, 0), 0f);
         PausePanel.SetActive(true);
         ridder.transform.DORotate(new Vector3(0, 0, -180), 3).SetLoops(-1, loopRidderFlipper);
@@ -113,6 +114,7 @@ public class UIAnimationController : MonoBehaviour
 
         ShowSlider();
         isGamePaused = true;
+        
     }
 
 
@@ -120,8 +122,7 @@ public class UIAnimationController : MonoBehaviour
     {
         PausePanel.transform.DOScale(new Vector3(0, 0, 1), 0.5f)
             .OnComplete(() => PausePanel.SetActive(false));
-        isGamePaused = false;
-
+        isGamePaused = false;  
     }
 
     public void NewIslandAnim()

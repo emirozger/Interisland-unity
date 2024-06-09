@@ -8,6 +8,9 @@ TagManager:
   - Ground
   - MainIsland
   - AnchorSteer
+  - NPC
+  - Placeable
+  - Climb
   layers:
   - Default
   - TransparentFX
@@ -28,7 +31,7 @@ TagManager:
   - Npc
   - FakeSeaRenderer
   - Interactable
-  - 
+  - Sale Interact
   - 
   - 
   - 

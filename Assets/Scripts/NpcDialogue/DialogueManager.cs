@@ -12,6 +12,7 @@ using UnityEngine.Serialization;
 public class DialogueManager : MonoBehaviour
 {
     [SerializeField] private GameObject dialogueParent;
+    [SerializeField] private GameObject npcInteractPanel;
     [SerializeField] private TMP_Text dialogueText;
     [SerializeField] private Button option1Button;
     [SerializeField] private Button option2Button;
@@ -42,25 +43,39 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
-        
-
         if (hit.collider != null)
-            hit.collider.GetComponent<Highlight>()?.ToggleHighlight(false);
+        {
+            CloseInteractVisuals();
+        }
 
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 5f, npcLayerMask))
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 5f))
         {
             if (hit.collider == null) return;
+            if (hit.collider.CompareTag("NPC") == false) return;
             var dialogueTrigger = hit.collider.GetComponent<DialogueTrigger>();
-            if (Input.GetKeyDown(KeyCode.Space) && dialogueTrigger != null && dialogueTrigger.hasSpoken)  isSpacePressed = true;
+            if (Input.GetKeyDown(KeyCode.Space) && dialogueTrigger != null && dialogueTrigger.hasSpoken)
+                isSpacePressed = true;
             if (dialogueTrigger.hasSpoken) return;
-            dialogueTrigger.npcHighlight.ToggleHighlight(true);
+            OpenInteractVisuals();
             if (!Input.GetKeyDown(KeyCode.E)) return;
-            dialogueTrigger.npcHighlight.ToggleHighlight(false);
+            CloseInteractVisuals();
             DialogueStart(dialogueTrigger.dialogueStrings, dialogueTrigger.npcTransform); //++
             dialogueTrigger.hasSpoken = true; //++
             dialogueTrigger.animator.SetTrigger("Talking"); //++
             instantiateTransform = dialogueTrigger.transform; //++
         }
+    }
+
+    private void CloseInteractVisuals()
+    {
+        hit.collider.GetComponent<Highlight>()?.ToggleHighlight(false);
+        npcInteractPanel.SetActive(false);
+    }
+
+    private void OpenInteractVisuals()
+    {
+        hit.collider.GetComponent<Highlight>()?.ToggleHighlight(true);
+        npcInteractPanel.SetActive(true);
     }
 
     public void InstantiateNPCPrefab(GameObject npcPrefab)
@@ -70,9 +85,9 @@ public class DialogueManager : MonoBehaviour
 
     public void InstantiateObj(GameObject obj)
     {
-        var newPos = new Vector3(instantiateTransform.position.x + 2.5f, instantiateTransform.position.y + .5f,
-            instantiateTransform.position.z);
-        Instantiate(obj, newPos, instantiateTransform.rotation);
+        var newPos = new Vector3(instantiateTransform.position.x, instantiateTransform.position.y + .5f,
+            instantiateTransform.position.z - 4f);
+        Instantiate(obj, newPos, Quaternion.identity);
     }
 
     public void CameraShake()

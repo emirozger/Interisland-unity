@@ -4,7 +4,6 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public static PlayerMovement Instance;
-    private Transform playerTransform;
 
     [Header("Movement Settings")] [SerializeField]
     private float speed = 4.5f;
@@ -14,13 +13,12 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Ground Check Settings")] [SerializeField]
     private float groundDistance = 0.2f;
-
+    [SerializeField] private GameObject climbInteractPanel;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform climbPoint;
     [SerializeField] private Transform climbEndPoint;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private LayerMask boatMask;
-    [SerializeField] private LayerMask climbMask;
     public bool PlayerInBoat;
 
     [Space(20)] [SerializeField] public Transform orientation;
@@ -63,14 +61,32 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+    private RaycastHit hit;
     void Update()
     {
-        isClimbing = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit,
-            2f, climbMask);
+        if (hit.collider != null)
+        {
+            climbInteractPanel.SetActive(false);
+            isClimbing = false;
+        }
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2f))
+        {
+            if (hit.collider != null && hit.collider.CompareTag("Climb") && !isClimbing)
+            {
+                isClimbing = true;
+                climbInteractPanel.SetActive(true);
+            }
+           
+        }
 
-        if (isClimbing && Input.GetKeyDown(KeyCode.Space) && hit.collider != null)
-            transform.DOLocalMove(climbPoint.position, 2f)
-                .OnComplete((() => transform.DOLocalMove(climbEndPoint.position, 2f)));
+        if (isClimbing && Input.GetKeyDown(KeyCode.Space))
+        {
+            climbInteractPanel.SetActive(false);
+            isClimbing = false;
+            transform.DOLocalMove(climbPoint.position, 2f).OnComplete((() => transform.DOLocalMove(climbEndPoint.position, 2f)));
+        }
+          
 
         PlayerInBoat = Physics.CheckSphere(groundCheck.position, groundDistance * 2, boatMask);
 

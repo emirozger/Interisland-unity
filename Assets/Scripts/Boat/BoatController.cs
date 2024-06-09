@@ -40,14 +40,6 @@ public class BoatController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            boatInteract.isDriving = true;
-        }
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            boatInteract.isDriving = false;
-        }
         Movement();
         AnchorBoat();
         Steer();

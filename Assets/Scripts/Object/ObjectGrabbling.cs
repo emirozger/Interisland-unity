@@ -8,7 +8,7 @@ public class ObjectGrabbling : MonoBehaviour
     private Rigidbody rb;
     [SerializeField] public Transform objectGrabPointTransform;
     private Collider collider;
-    private bool wasPlaced = false;
+    public bool wasPlaced = false;
     #endregion
     
     #region Object Rotation Settings
@@ -28,6 +28,7 @@ public class ObjectGrabbling : MonoBehaviour
     {
         if (this.wasPlaced && PlayerPickAndDrop.Instance.InHand == false)
         {
+            PlayerMoneyManager.Instance.GetPlacedArea--;
             this.objectGrabPointTransform = objectGrabPointTransform;
            // this.transform.parent = objectGrabPointTransform;
             //this.transform.localPosition = Vector3.zero;

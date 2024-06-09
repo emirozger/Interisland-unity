@@ -28,6 +28,11 @@ public class MinimapController : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation,targetRot, Time.deltaTime*2);
     }
 
+    public void SetPlayer(Transform _player)
+    {
+        this.player = _player;
+    }
+/*
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.M))
@@ -48,4 +53,5 @@ public class MinimapController : MonoBehaviour
             }
         }
     }
+    */
 }

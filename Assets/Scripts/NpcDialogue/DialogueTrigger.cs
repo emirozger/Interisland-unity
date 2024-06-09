@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -12,14 +14,24 @@ public class DialogueTrigger : MonoBehaviour
     [SerializeField] private Text toggleText;
     public Animator animator;
     public Highlight npcHighlight;
+    [SerializeField] private TMP_Text npcNameText;
 
-    [Min(1)]public int missionID;
-    
-    public bool hasSpoken = false;  
+    [Min(1)] public int missionID;
 
-    private void Start() => npcHighlight = GetComponent<Highlight>();
-    
-    
+    public bool hasSpoken = false;
+
+    private void Start()
+    {
+        npcHighlight = GetComponent<Highlight>();
+        npcNameText = GetComponentInChildren<TMP_Text>();
+        if (npcNameText != null)
+        {
+            npcNameText.transform.DOMoveY(npcNameText.transform.localPosition.y + 2.5f, 1f).SetLoops(-1, LoopType.Yoyo)
+                .SetEase(Ease.InOutSine);
+        }
+    }
+
+
     /*
     private void OnTriggerEnter(Collider other)
     {
@@ -33,7 +45,7 @@ public class DialogueTrigger : MonoBehaviour
                 animator.SetTrigger("Talking");
                 other.gameObject.GetComponentInParent<DialogueManager>().instantiateTransform = this.transform; //new npc spawned pos
             }
-          
+
         }
     }
     */
@@ -50,14 +62,12 @@ public class DialogueString
     public string text; //npc says
     public bool isEnd;
 
-    [Header("Branch")]
-    public bool isQuestion;
+    [Header("Branch")] public bool isQuestion;
     public string answerOption1;
     public string answerOption2;
     public int option1IndexJump;
     public int option2IndexJump;
 
-    [Header("Events")]
-    public UnityEvent OnStartDialogue;
+    [Header("Events")] public UnityEvent OnStartDialogue;
     public UnityEvent OnEndDialogue;
 }

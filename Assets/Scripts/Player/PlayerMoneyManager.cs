@@ -10,6 +10,21 @@ public class PlayerMoneyManager : MonoBehaviour
     public static PlayerMoneyManager Instance;
     private int money = 0;
     [SerializeField] private TextMeshProUGUI playerMoneyText;
+    [SerializeField] private TextMeshProUGUI areaText;
+
+    private int totalArea = 4;
+    private int placedArea = 0;
+
+    public int GetPlacedArea
+    {
+        get { return placedArea; }
+        set
+        {
+            placedArea = value;
+            areaText.text = placedArea + "/" + totalArea;
+        }
+    }
+
 
     public int AddMoney(int amount)
     {

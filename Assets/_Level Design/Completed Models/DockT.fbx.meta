@@ -3,7 +3,37 @@ guid: 371dd9ec7e3aa784ab6275ba4cf6b54a
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "Ah\u015Fap2"
+    second: {fileID: 2100000, guid: b49d35530afd748438e6ea5309957a4a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "Ah\u015Fap3"
+    second: {fileID: 2100000, guid: 7b0438afd953c4445add77e028fee60a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Lamp1
+    second: {fileID: 2100000, guid: e70a0fc4c33e14048a1e61c12694d239, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Lamp2
+    second: {fileID: 2100000, guid: 07100d36c4ba2544cb1686ae58bafe18, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "ah\u015Fap1"
+    second: {fileID: 2100000, guid: 4e9b7f57986ffc345ab3dff4c32894ad, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u0130p"
+    second: {fileID: 2100000, guid: 2308ee59ad64d1648a8908e343c08d16, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -88,7 +118,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.004
+    globalScale: 0.4
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

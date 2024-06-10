@@ -13,7 +13,7 @@ public class BoatInteract : MonoBehaviour
     [SerializeField]
     private GameObject anchorRotateInteractPanel;
     [SerializeField]
-    private GameObject climbBoatInteractPanel;   
+    private GameObject boatCameraPosPanel;   
         
     
     
@@ -39,13 +39,23 @@ public class BoatInteract : MonoBehaviour
 
     public Transform inBoatPlayerPos;
     public Transform cameraRig;
-    public Transform driveBoatCameraPos;
-    public Transform driveBoatCameraPos2;
+  
     private Rigidbody rb;
     private RaycastHit hit;
     private bool inBoat;
     public bool InBoat => inBoat;
 
+    
+    [SerializeField] private Transform[] driveBoatCameraPositions;
+    private KeyCode[] cameraSwitchKeys = new KeyCode[] 
+    {
+        KeyCode.Alpha1,
+        KeyCode.Alpha2,
+        KeyCode.Alpha3,
+        KeyCode.Alpha4,
+        KeyCode.Alpha5
+    };
+    
     private void Awake()
     {
         Instance = this;
@@ -79,19 +89,17 @@ public class BoatInteract : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1) && isDriving)
+        
+        if (isDriving)
         {
-            cameraRig.transform.parent = null;
-            cameraRig.transform.parent = driveBoatCameraPos;
-            cameraRig.transform.localPosition = Vector3.zero;
-            cameraRig.transform.localRotation = Quaternion.identity;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2) && isDriving)
-        {
-            cameraRig.transform.parent = null;
-            cameraRig.transform.parent = driveBoatCameraPos2;
-            cameraRig.transform.localPosition = Vector3.zero;
-            cameraRig.transform.localRotation = Quaternion.identity;
+            for (int i = 0; i < cameraSwitchKeys.Length; i++)
+            {
+                if (Input.GetKeyDown(cameraSwitchKeys[i]))
+                {
+                    SwitchCameraPosition(i);
+                    break; // Bir tuş basıldığında döngüyü sonlandır
+                }
+            }
         }
 
         if (isDriving) return;
@@ -133,7 +141,13 @@ public class BoatInteract : MonoBehaviour
                 }));
         }
     }
-
+    void SwitchCameraPosition(int index)
+    {
+        cameraRig.transform.parent = null;
+        cameraRig.transform.parent = driveBoatCameraPositions[index];
+        cameraRig.transform.localPosition = Vector3.zero;
+        cameraRig.transform.localRotation = Quaternion.identity;
+    }
     private void CloseInteractPanels()
     {
         anchorRotateInteractPanel.SetActive(false);
@@ -142,8 +156,10 @@ public class BoatInteract : MonoBehaviour
     }
     public void EnterDriveHandler()
     {
+        AudioManager.Instance.Stop("Walk");
         anchorInteractPanel.SetActive(true);
         driveBoatInteractPanel.SetActive(false);
+        boatCameraPosPanel.SetActive(true);
         steerHighlight.ToggleHighlight(false);
         Destroy(this.GetComponent<CapsuleCollider>());
         compassController.SetCompass(boatController.transform);
@@ -156,7 +172,7 @@ public class BoatInteract : MonoBehaviour
         this.GetComponent<PlayerPickAndDrop>().enabled = false;
         this.GetComponent<DialogueManager>().enabled = false;
         boatController.enabled = true;
-        cameraRig.transform.parent = driveBoatCameraPos;
+        cameraRig.transform.parent = driveBoatCameraPositions[0];
         cameraRig.transform.localRotation = Quaternion.identity;
         cameraRig.transform.localPosition = Vector3.zero;
         cameraRig.GetComponent<CameraController>().enabled = false;
@@ -167,6 +183,7 @@ public class BoatInteract : MonoBehaviour
     public void ExitDriveHandler()
     {
         anchorInteractPanel.SetActive(false);
+        boatCameraPosPanel.SetActive(false);
         compassController.SetCompass(PlayerMovement.Instance.orientation);
         rb.isKinematic = false;
         this.AddComponent<CapsuleCollider>();

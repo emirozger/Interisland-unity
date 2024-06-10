@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class DayAndNightCycleManager : MonoBehaviour
 {
-    [SerializeField] private Image blackImage;
+   // [SerializeField] private Image blackImage;
     [SerializeField] private float timeMultiplier = 1f;
     [SerializeField] private float startHour = 8f;
     [SerializeField] private TextMeshProUGUI timeText;
@@ -16,14 +16,13 @@ public class DayAndNightCycleManager : MonoBehaviour
     [SerializeField] private Color nightAmbientLight;
     [SerializeField] private AnimationCurve lightChangeCurve;
     [SerializeField] private float maxSunLightIntensity = 1f;
-    [SerializeField] private Light moonLight;
+   // [SerializeField] private Light moonLight;
     [SerializeField] private float maxMoonLightIntensity = 1f;
 
     private DateTime currentTime;
     private TimeSpan sunriseTime;
     private TimeSpan sunsetTime;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
@@ -31,13 +30,13 @@ public class DayAndNightCycleManager : MonoBehaviour
         sunsetTime = TimeSpan.FromHours(sunsetHour);
     }
 
-    // Update is called once per frame
+   
     void Update()
     {
         UpdateTimeOfDay();
         RotateSun();
         UpdateLightSettings();
-        UpdateBlackImage();
+        //UpdateBlackImage();
     }
 
     private void UpdateTimeOfDay()
@@ -87,11 +86,11 @@ public class DayAndNightCycleManager : MonoBehaviour
     {
         float dotProduct = Vector3.Dot(sunLight.transform.forward, Vector3.down);
         sunLight.intensity = Mathf.Lerp(0, maxSunLightIntensity, lightChangeCurve.Evaluate(dotProduct));
-        moonLight.intensity = Mathf.Lerp(maxMoonLightIntensity, 0, lightChangeCurve.Evaluate(dotProduct));
+        //moonLight.intensity = Mathf.Lerp(maxMoonLightIntensity, 0, lightChangeCurve.Evaluate(dotProduct));
         RenderSettings.ambientLight = Color.Lerp(nightAmbientLight, dayAmbientLight, lightChangeCurve.Evaluate(dotProduct));
         RenderSettings.ambientIntensity = Mathf.Lerp(nightAmbientLight.maxColorComponent, dayAmbientLight.maxColorComponent, lightChangeCurve.Evaluate(dotProduct));
     }
-
+/*
     private void UpdateBlackImage()
     {
         if (currentTime.TimeOfDay >= sunsetTime || currentTime.TimeOfDay <= sunriseTime)
@@ -103,7 +102,7 @@ public class DayAndNightCycleManager : MonoBehaviour
             blackImage.gameObject.SetActive(false);
         }
     }
-
+*/
     private TimeSpan CalculateTimeDifference(TimeSpan fromTime, TimeSpan toTime)
     {
         TimeSpan difference = toTime - fromTime;

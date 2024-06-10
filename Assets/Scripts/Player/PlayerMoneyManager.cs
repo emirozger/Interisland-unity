@@ -29,6 +29,7 @@ public class PlayerMoneyManager : MonoBehaviour
     public int AddMoney(int amount)
     {
         GetMoney += amount;
+        AudioManager.Instance.PlayOneShot("Add Coin");
         return GetMoney;
     }
 
@@ -36,6 +37,7 @@ public class PlayerMoneyManager : MonoBehaviour
     {
         if (GetMoney < amount) return 0;
         GetMoney -= amount;
+        AudioManager.Instance.PlayOneShot("Substract Coin");
         return GetMoney;
     }
 
@@ -64,6 +66,10 @@ public class PlayerMoneyManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.G))
         {
             AddMoney(10);
+        }
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            SubtractMoney(10);
         }
     }
 

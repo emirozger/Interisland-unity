@@ -53,9 +53,9 @@ public class BoatController : MonoBehaviour
             {
                 if (!boatIsAnchored)
                 {
-                   
+                    AudioManager.Instance.PlayOneShot("Anchor Drop");
                     var rotateGoal = new Vector3(0, 0, 90);
-                    anchorSteer.DOLocalRotate(rotateGoal, 1f).OnComplete(()=>
+                    anchorSteer.DOLocalRotate(rotateGoal, 4f).OnComplete(()=>
                     {
                         if (movementFactor > 0.0f)
                         {
@@ -65,7 +65,8 @@ public class BoatController : MonoBehaviour
                         var anchorPoint = this.transform.position;
                         float currentSpeed = rb.velocity.magnitude;
                         float shakeStrength = currentSpeed < 4f ? strength : (currentSpeed < 6f ? strength * 3f : strength * 5f);
-
+                        
+                       
                         rb.AddForceAtPosition(Vector3.down * anchoredForce, anchorPoint, ForceMode.Acceleration);
                         playerCamera.DOShakeRotation(1f,shakeStrength,vibrato,randomness);
                         boatIsAnchored = true;

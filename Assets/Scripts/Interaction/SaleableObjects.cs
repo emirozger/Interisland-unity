@@ -27,36 +27,36 @@ public class SaleableObjects : MonoBehaviour, IInteractable
             return;
         switch (objectType)
         {
-            case ObjectType.Null:
+            case ObjectType.Hicbirsey:
                 break;
-            case ObjectType.EmptyCase:
+            case ObjectType.BosKutu:
                 break;
-            case ObjectType.OrangeFish:
+            case ObjectType.TuruncuBalik:
                 playerMoneyManager.SubtractMoney(this.objectPrice);
                 Instantiate(instantiatePrefab, spawnPos.position, Quaternion.Euler(-90, 0, 0));
                 Debug.Log("Buy Orange Fish");
                 break;
-            case ObjectType.BlueFish:
+            case ObjectType.MaviBalik:
                 Debug.Log("Buy Blue Fish");
                 playerMoneyManager.SubtractMoney(this.objectPrice);
                 Instantiate(instantiatePrefab, spawnPos.position, Quaternion.Euler(-90, 0, 0));
                 break;
-            case ObjectType.Pineapple:
+            case ObjectType.Ananas:
                 Debug.Log("Buy Pineapple");
                 playerMoneyManager.SubtractMoney(this.objectPrice);
                 Instantiate(instantiatePrefab, spawnPos.position, Quaternion.Euler(-90, 0, 0));
                 break;
-            case ObjectType.Peach:
+            case ObjectType.Seftali:
                 Debug.Log("Buy Peach");
                 playerMoneyManager.SubtractMoney(this.objectPrice);
                 Instantiate(instantiatePrefab, spawnPos.position, Quaternion.Euler(-90, 0, 0));
                 break;
-            case ObjectType.Apple:
+            case ObjectType.Elma:
                 Debug.Log("Buy Aplle");
                 playerMoneyManager.SubtractMoney(this.objectPrice);
                 Instantiate(instantiatePrefab, spawnPos.position, Quaternion.Euler(-90, 0, 0));
                 break;
-            case ObjectType.Post:
+            case ObjectType.Mektup:
                 Debug.Log("Buy Post");
                 playerMoneyManager.SubtractMoney(this.objectPrice);
                 Instantiate(instantiatePrefab, spawnPos.position, Quaternion.Euler(-90, 0, 0));

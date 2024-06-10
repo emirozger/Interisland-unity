@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class SaleInteract : MonoBehaviour
 {
+    public static SaleInteract Instance;
+    
     [Header("Buy Interact Settings")] private Camera cameraMain;
     private RaycastHit hit;
     private const float RAY_DISTANCE = 5f;
@@ -10,11 +12,9 @@ public class SaleInteract : MonoBehaviour
     [SerializeField] private GameObject buyInteractPanel;
 
 
-    [Header("Sale Interact Settings")] [SerializeField]
-    private PlayerPickAndDrop player;
-
+    [Header("Sale Interact Settings")] 
+    [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private Transform interactionPoint;
-
     [SerializeField] private float interactionPointRadius = 1.5f;
     [SerializeField] private LayerMask saleInteractableLayer;
     [SerializeField] private int numFound;
@@ -30,10 +30,14 @@ public class SaleInteract : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
         cameraMain = Camera.main;
     }
 
-
+    public void SetSaleInteractPanelActive(bool isActive)
+    {
+        saleInteractPanel.SetActive(isActive);
+    }
     void Update()
     {
         BuyInteractFunc();
@@ -57,6 +61,7 @@ public class SaleInteract : MonoBehaviour
                 saleInteractPanel.SetActive(true);
                 if (Input.GetKeyDown(KeyCode.E))
                 {
+                    playerMovement.enabled = false;
                     isSaleNow = true;
                     saleInteractPanel.SetActive(false);
                     missionCompleted.Interact();
@@ -88,6 +93,7 @@ public class SaleInteract : MonoBehaviour
             {
                 saleInteract?.OnInteract();
                 buyInteractPanel.SetActive(false);
+                this.enabled = false;
             }
         }
     }

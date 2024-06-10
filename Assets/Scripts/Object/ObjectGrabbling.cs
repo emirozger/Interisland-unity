@@ -26,6 +26,7 @@ public class ObjectGrabbling : MonoBehaviour
 
     public void Grab(Transform objectGrabPointTransform)
     {
+        AudioManager.Instance.PlayOneShot("Pick Up");
         if (this.wasPlaced && PlayerPickAndDrop.Instance.InHand == false)
         {
             PlayerMoneyManager.Instance.GetPlacedArea--;
@@ -73,7 +74,7 @@ public class ObjectGrabbling : MonoBehaviour
         this.collider.enabled = true;
         this.objectGrabPointTransform = null;
         this.transform.parent = null;
-        PlayerPickAndDrop.Instance.inHandObjType = ObjectType.Null;
+        PlayerPickAndDrop.Instance.inHandObjType = ObjectType.Hicbirsey;
         PlayerPickAndDrop.Instance.InHand = false;
     }
 
@@ -88,7 +89,7 @@ public class ObjectGrabbling : MonoBehaviour
         this.wasPlaced = true;
         this.rb.interpolation = RigidbodyInterpolation.None;
         PlayerPickAndDrop.Instance.InHand = false;
-        PlayerPickAndDrop.Instance.inHandObjType = ObjectType.Null;
+        PlayerPickAndDrop.Instance.inHandObjType = ObjectType.Hicbirsey;
         ObjectSorting.Instance.AddItem(this.gameObject);
     }
     

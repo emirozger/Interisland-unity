@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class MissionCompleted : MonoBehaviour
 {
@@ -19,8 +20,8 @@ public class MissionCompleted : MonoBehaviour
     [SerializeField] private GameObject anotherOfferPanel;
     [SerializeField] private TextMeshProUGUI anotherOfferInfoText;
     [SerializeField] private CameraController mouseLook;
-   [SerializeField] private GameObject wantToSellPanel;
-   [SerializeField] private GameObject npcAcceptedOfferPanel;
+    [SerializeField] private GameObject wantToSellPanel;
+    [SerializeField] private GameObject npcAcceptedOfferPanel;
 
     public TMP_InputField offerInputField;
     public TMP_Text acceptanceText;
@@ -34,7 +35,7 @@ public class MissionCompleted : MonoBehaviour
     private int offerPrice;
     private Collider collider;
     [SerializeField] private Collider behindNpcCollider;
-    
+
     [System.Serializable]
     public class ProbabilityRange
     {
@@ -60,6 +61,7 @@ public class MissionCompleted : MonoBehaviour
             offerInputField.text = Regex.Replace(input, "[^0-9]", "");
         }
     }
+
     private float CalculateAcceptanceProbability(float _offerPrice)
     {
         foreach (var range in acceptanceProbabilities)
@@ -69,9 +71,10 @@ public class MissionCompleted : MonoBehaviour
                 return range.acceptanceProbability;
             }
         }
+
         return 0;
     }
- 
+
     public void SubmitOffer()
     {
         float submitOfferPrice;
@@ -94,7 +97,7 @@ public class MissionCompleted : MonoBehaviour
             Debug.Log($"acceptanceProbability {acceptanceProbability}");
             Debug.Log($"random value= {random}");
             if (random < acceptanceProbability)
-            {          
+            {
                 objectCount++;
                 CompletedMission(player);
                 mouseLook.enabled = true;
@@ -103,13 +106,17 @@ public class MissionCompleted : MonoBehaviour
                 collider.enabled = false;
                 behindNpcCollider.enabled = true;
                 //acceptanceText.text = "Anlastik!";
-                
+                AudioManager.Instance.PlayOneShot("Offer Yes");
                 NpcAcceptedOfferPanelAnim();
-                ClosePanelWithFade(offerInputField.gameObject, 1.5f);
+                player.CloseAllInteractionPanels();
+                ClosePanelWithFade(offerInputField.gameObject, .7f);
             }
             else
             {
-                acceptanceText.text = "Fiyati begenmedim!";
+                Camera.main.DOShakeRotation(.7f);
+                AudioManager.Instance.PlayOneShot("Offer No");
+                acceptanceText.DOFade(1f, .2f);
+                acceptanceText.DOText("Anlaşamadık!", 1.5f).OnComplete(() => acceptanceText.DOFade(0f, .2f));
             }
         }
         else
@@ -117,21 +124,23 @@ public class MissionCompleted : MonoBehaviour
             acceptanceText.text = "";
         }
     }
+
     private void NpcAcceptedOfferPanelAnim()
     {
         npcAcceptedOfferPanel.SetActive(true);
-        DOVirtual.DelayedCall(1.5f,()=> npcAcceptedOfferPanel.SetActive(false));
+        DOVirtual.DelayedCall(1.5f, () => npcAcceptedOfferPanel.SetActive(false));
     }
+
     public void WantToSellAcceptButton()
     {
-       
         ClosePanelWithFade(wantToSellPanel, 1.5f);
-        OpenPanelWithFade(offerInputField.gameObject);
+        OpenPanelWithFade(offerInputField.transform.parent.gameObject);
         mouseLook.ShowCursor();
         mouseLook.enabled = false;
-       // player.GetComponent<PlayerMovement>().enabled = false;
+        // player.GetComponent<PlayerMovement>().enabled = false;
         player.enabled = false;
     }
+
     public void WantToSellDeclineButton()
     {
         ClosePanelWithFade(wantToSellPanel, 1.5f);
@@ -140,33 +149,40 @@ public class MissionCompleted : MonoBehaviour
         player.enabled = true;
         player.GetComponent<PlayerMovement>().enabled = true;
         SaleInteract.IsSaleNow = false;
+        DOVirtual.DelayedCall(1.5f, () => SaleInteract.Instance.enabled = true);
     }
+
     public void AnotherOfferDecline()
     {
         StartCoroutine(AnotherOfferDelay(npcTradeDeclineDelay));
-        ClosePanelWithFade(anotherOfferPanel,.5f);
+        ClosePanelWithFade(anotherOfferPanel, .5f);
         WantToSellDeclineButton();
+        //DOVirtual.DelayedCall(1.5f, () => SaleInteract.Instance.enabled = true);
     }
 
 
-    
     public void AnotherOfferAccept()
     {
-        if (player.inHandObjType != ObjectType.Null && player.currentObjectGrabbling != null)
-            Destroy(player.currentObjectGrabbling.gameObject);
-
-        player.inHandObjType = ObjectType.Null;
-        player.InHand = false;
-        player.currentObjectGrabbling = null;
-        ClosePanelWithFade(anotherOfferPanel, 1.5f);
-        mouseLook.enabled = true;
-        mouseLook.HideCursor();
-        player.GetComponent<PlayerMovement>().enabled = true;
-        PlayerMoneyManager.Instance.AddMoney(offerPrice);
-        collider.enabled = false;
-        behindNpcCollider.enabled = true;
-        
+        if (player.inHandObjType != ObjectType.Hicbirsey && player.currentObjectGrabbling != null)
+        {
+            var obj = player.currentObjectGrabbling.gameObject;
+            obj.transform.DOShakeScale(.45f, 10f, 10, 90, true)
+                .OnComplete((() => Destroy(obj)));
+            AudioManager.Instance.PlayOneShot("Another Offer");
+            player.inHandObjType = ObjectType.Hicbirsey;
+            player.InHand = false;
+            player.currentObjectGrabbling = null;
+            ClosePanelWithFade(anotherOfferPanel, .5f);
+            mouseLook.enabled = true;
+            mouseLook.HideCursor();
+            player.GetComponent<PlayerMovement>().enabled = true;
+            PlayerMoneyManager.Instance.AddMoney(offerPrice);
+            collider.enabled = false;
+            behindNpcCollider.enabled = true;
+            player.CloseAllInteractionPanels();
+        }
     }
+
     public IEnumerator AnotherOffer(float offerDuration = 1f)
     {
         if (!player.InHand)
@@ -174,21 +190,22 @@ public class MissionCompleted : MonoBehaviour
             acceptanceText.text = "You have no object in your hand!";
             yield break;
         }
-        if(!canItSell) yield break;
+
+        if (!canItSell) yield break;
         offerPrice = (int)Random.Range(minAnotherOfferPrice, maxAnotherOfferPrice);
-        anotherOfferInfoText.text = $"Your object is not {requiredObjectType}! I give you {offerPrice}";
+        anotherOfferInfoText.text =
+            $"Senin urunun {requiredObjectType} degil! Sana {offerPrice} $ kadar teklifim var, kabul eder misin?";
 
         OpenPanelWithFade(anotherOfferPanel);
         mouseLook.enabled = false;
         player.GetComponent<PlayerMovement>().enabled = false;
-
     }
- 
-    
+
+
     private IEnumerator AnotherOfferDelay(int delay)
     {
         offerDeclineCount++;
-        
+
         if (offerDeclineCount == 3)
         {
             canItSell = false;
@@ -196,8 +213,8 @@ public class MissionCompleted : MonoBehaviour
             canItSell = true;
             offerDeclineCount = 0;
         }
-        
     }
+
     private void OnTriggerEnter(Collider other)
     {
         //Interact();
@@ -232,11 +249,11 @@ public class MissionCompleted : MonoBehaviour
         panel.transform.localScale = Vector3.one;
         panel.SetActive(true);
     }
+
     private void ClosePanelWithFade(GameObject panel, float duration)
     {
         panel.transform.DOScale(Vector3.zero, duration).From(Vector3.one)
             .OnComplete(() => panel.SetActive(false));
-
     }
 
 
@@ -262,7 +279,7 @@ public class MissionCompleted : MonoBehaviour
         if (player != null && player.currentObjectGrabbling != null)
         {
             Destroy(player.currentObjectGrabbling.gameObject);
-            player.inHandObjType = ObjectType.Null;
+            player.inHandObjType = ObjectType.Hicbirsey;
             player.InHand = false;
             player.currentObjectGrabbling = null;
             player.GetComponent<PlayerPickAndDrop>().enabled = true;

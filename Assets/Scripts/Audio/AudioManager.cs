@@ -48,7 +48,8 @@ public class AudioManager : MonoBehaviour
         {
             Debug.Log("Ses : " + name + " bulunamadı");
         }
-        s.audioSource.PlayOneShot(s.audioSource.clip);
+
+        s.audioSource.Play();
     }
     public void Stop(string name)
     {

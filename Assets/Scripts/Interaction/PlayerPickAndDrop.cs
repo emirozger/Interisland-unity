@@ -32,7 +32,7 @@ public class PlayerPickAndDrop : MonoBehaviour
         get { return inHand; }
         set { inHand = value; }
     }
-
+    
     private void Awake() => Instance = this;
 
     private void Start() => cameraMain = Camera.main.transform;
@@ -70,6 +70,7 @@ public class PlayerPickAndDrop : MonoBehaviour
                     if (currentObjectGrabbling != null)
                     {
                         currentObjectGrabbling.Drop(); //drop
+                        SaleInteract.Instance.SetSaleInteractPanelActive(false);
                         currentObjectGrabbling = null;
                         rotateInteractionPanel.SetActive(false);
                     }
@@ -95,11 +96,19 @@ public class PlayerPickAndDrop : MonoBehaviour
         }
     }
 
+    public void CloseAllInteractionPanels()
+    {
+        grabInteractionPanel.SetActive(false);
+        placeInteractionPanel.SetActive(false);
+        rotateInteractionPanel.SetActive(false);
+        areaFullPanel.SetActive(false);
+    }
     private void CloseInteractVisual()
     {
         hit.collider?.GetComponent<Highlight>()?.ToggleHighlight(false);
         grabInteractionPanel.SetActive(false);
         placeInteractionPanel.SetActive(false);
+        //rotateInteractionPanel.SetActive(false);
         areaFullPanel.SetActive(false);
     }
 

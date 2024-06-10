@@ -5,14 +5,13 @@ public class PlayerMovement : MonoBehaviour
 {
     public static PlayerMovement Instance;
 
-    [Header("Movement Settings")] [SerializeField]
-    private float speed = 4.5f;
-
+    [Header("Movement Settings")]
+    [SerializeField] private float speed = 4.5f;
     [SerializeField] private float gravity = -9.81f * 2f;
     [SerializeField] private float jumpHeight = .8f;
 
-    [Header("Ground Check Settings")] [SerializeField]
-    private float groundDistance = 0.2f;
+    [Header("Ground Check Settings")]
+    [SerializeField] private float groundDistance = 0.2f;
     [SerializeField] private GameObject climbInteractPanel;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform climbPoint;
@@ -21,7 +20,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask boatMask;
     public bool PlayerInBoat;
 
-    [Space(20)] [SerializeField] public Transform orientation;
+    [Space(20)]
+    [SerializeField] public Transform orientation;
 
     private bool isClimbing;
     private bool isGrounded;
@@ -30,6 +30,9 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController characterController;
 
     public Rigidbody shipRB;
+
+    private bool isMoving;
+    private bool wasMoving;
 
     private void Awake()
     {
@@ -61,8 +64,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
     private RaycastHit hit;
+
     void Update()
     {
         if (hit.collider != null)
@@ -77,16 +80,14 @@ public class PlayerMovement : MonoBehaviour
                 isClimbing = true;
                 climbInteractPanel.SetActive(true);
             }
-           
         }
 
         if (isClimbing && Input.GetKeyDown(KeyCode.Space))
         {
             climbInteractPanel.SetActive(false);
             isClimbing = false;
-            transform.DOLocalMove(climbPoint.position, 2f).OnComplete((() => transform.DOLocalMove(climbEndPoint.position, 2f)));
+            transform.DOLocalMove(climbPoint.position, 2f).OnComplete(() => transform.DOLocalMove(climbEndPoint.position, 2f));
         }
-          
 
         PlayerInBoat = Physics.CheckSphere(groundCheck.position, groundDistance * 2, boatMask);
 
@@ -96,19 +97,33 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = orientation.right * input.x + orientation.forward * input.y;
 
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        if ((isGrounded) && velocity.y < 0)
+        if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
 
         characterController.Move(move * speed * Time.deltaTime);
 
-        if (Input.GetButtonDown("Jump") && isGrounded || PlayerInBoat && Input.GetButtonDown("Jump"))
+        if ((Input.GetButtonDown("Jump") && isGrounded) || (PlayerInBoat && Input.GetButtonDown("Jump")))
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
         velocity.y += gravity * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
+
+        // Check if player is moving
+        isMoving = move != Vector3.zero;
+
+        if (isMoving && !wasMoving)
+        {
+            AudioManager.Instance.Play("Walk");
+        }
+        else if (!isMoving && wasMoving)
+        {
+            AudioManager.Instance.Stop("Walk");
+        }
+
+        wasMoving = isMoving;
     }
 }

@@ -1,11 +1,11 @@
 ﻿public enum ObjectType
 {
-    Null,
-    EmptyCase,
-    OrangeFish,
-    BlueFish,
-    Pineapple,
-    Peach,
-    Apple,
-    Post,
+    Hicbirsey,
+    BosKutu,
+    TuruncuBalik,
+    MaviBalik,
+    Ananas,
+    Seftali,
+    Elma,
+    Mektup,
 }

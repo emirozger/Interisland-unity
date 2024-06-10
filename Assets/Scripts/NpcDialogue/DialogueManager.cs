@@ -138,6 +138,7 @@ public class DialogueManager : MonoBehaviour
     {
         while (currentDialogueIndex < dialogueList.Count)
         {
+            AudioManager.Instance.PlayOneShot("NPC Talk");
             DialogueString line = dialogueList[currentDialogueIndex];
 
             line.OnStartDialogue?.Invoke();

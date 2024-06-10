@@ -90,9 +90,16 @@ public class UIAnimationController : MonoBehaviour
         SoundSlider1.DOFade(1f, 1.2f).From(0).SetEase(PauseButtonsEase);
     }
 
+    [SerializeField] private GameObject gameplayUI, interactionUI;
+    [SerializeField] private Image blackImage;
+    [SerializeField] private CameraController mouseLook;
     public void OpenPauseMenu()
     {
-
+        mouseLook.enabled = false;
+        mouseLook.ShowCursor();
+        blackImage.DOFade(.85f, 0.01f);
+        gameplayUI.SetActive(false);
+        interactionUI.SetActive(false);
         PausePanel.transform.DOScale(new Vector3(1, 1, 0), 0f);
         PausePanel.SetActive(true);
         ridder.transform.DORotate(new Vector3(0, 0, -180), 3).SetLoops(-1, loopRidderFlipper);
@@ -120,9 +127,14 @@ public class UIAnimationController : MonoBehaviour
 
     public void ClosePauseMenu()
     {
+        mouseLook.enabled = true;
+        mouseLook.HideCursor();
+        blackImage.DOFade(0f, .01f);
         PausePanel.transform.DOScale(new Vector3(0, 0, 1), 0.5f)
             .OnComplete(() => PausePanel.SetActive(false));
         isGamePaused = false;  
+        gameplayUI.SetActive(true);
+        interactionUI.SetActive(true);
     }
 
     public void NewIslandAnim()

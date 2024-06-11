@@ -4,7 +4,7 @@ using UnityEngine;
 public class SaleInteract : MonoBehaviour
 {
     public static SaleInteract Instance;
-    
+
     [Header("Buy Interact Settings")] private Camera cameraMain;
     private RaycastHit hit;
     private const float RAY_DISTANCE = 5f;
@@ -12,7 +12,7 @@ public class SaleInteract : MonoBehaviour
     [SerializeField] private GameObject buyInteractPanel;
 
 
-    [Header("Sale Interact Settings")] 
+    [Header("Sale Interact Settings")]
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private Transform interactionPoint;
     [SerializeField] private float interactionPointRadius = 1.5f;
@@ -48,22 +48,26 @@ public class SaleInteract : MonoBehaviour
         SaleInteractFunc();
     }
 
+    public MissionCompleted currentNPC;
+
     private void SaleInteractFunc()
     {
         numFound = Physics.OverlapSphereNonAlloc(interactionPoint.position, interactionPointRadius, colliders,
             saleInteractableLayer);
         if (numFound > 0)
         {
-            var missionCompleted = colliders[0].GetComponent<MissionCompleted>();
+            currentNPC = colliders[0].GetComponent<MissionCompleted>(); // NPC'ye eriþim saðlayýn
 
-            if (missionCompleted != null)
+            if (currentNPC != null)
             {
                 saleInteractPanel.SetActive(true);
                 if (Input.GetKeyDown(KeyCode.E))
                 {
+                    currentNPC.offerInputField.onEndEdit.RemoveAllListeners();
+                    currentNPC.offerInputField.onEndEdit.AddListener(delegate { currentNPC.SubmitOffer(); });
                     playerMovement.enabled = false;
                     saleInteractPanel.SetActive(false);
-                    missionCompleted.Interact();
+                    currentNPC.Interact();
                     this.enabled = false;
                 }
             }
@@ -73,6 +77,7 @@ public class SaleInteract : MonoBehaviour
             saleInteractPanel.SetActive(false);
         }
     }
+
 
     private void BuyInteractFunc()
     {

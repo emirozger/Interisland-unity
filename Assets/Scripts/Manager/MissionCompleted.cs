@@ -50,8 +50,11 @@ public class MissionCompleted : MonoBehaviour
 
     private void Start()
     {
+        offerInputField.onEndEdit.RemoveAllListeners();
         collider = this.GetComponent<Collider>();
         offerInputField.onValueChanged.AddListener(ValidateInput);
+
+        Debug.Log($"NPC Instance ID: {this.GetInstanceID()} with NPC Price: {npcPrice}");
     }
 
     private void ValidateInput(string input)
@@ -81,8 +84,8 @@ public class MissionCompleted : MonoBehaviour
         float submitOfferPrice;
 
         if (float.TryParse(offerInputField.text, out submitOfferPrice))
-
         {
+            Debug.Log($"SubmitOffer: Current NPC Price: {npcPrice} for Instance ID: {this.GetInstanceID()}");
             if (submitOfferPrice > npcPrice * 2)
             {
                 acceptanceText.DOFade(1, .2f);
@@ -107,7 +110,11 @@ public class MissionCompleted : MonoBehaviour
                 mouseLook.HideCursor();
                 pickAndDrop.GetComponent<PlayerMovement>().enabled = true;
                 // TODO : collider.enabled = false;
-                behindNpcCollider.enabled = true;
+                if (behindNpcCollider != null)
+                {
+                    behindNpcCollider.enabled = true;
+                }
+
                 //acceptanceText.text = "Anlastik!";
                 AudioManager.Instance.PlayOneShot("Offer Yes");
                 PlayerMoneyManager.Instance.AddMoney((int)submitOfferPrice);
@@ -120,7 +127,7 @@ public class MissionCompleted : MonoBehaviour
             else
             {
                 acceptanceText.text = string.Empty;
-                Camera.main.DOShakeRotation(.2f,10,10,90);
+                Camera.main.DOShakeRotation(.2f, 10, 10, 90);
                 AudioManager.Instance.PlayOneShot("Offer No");
                 acceptanceText.DOFade(1f, .2f);
                 acceptanceText.DOText("Anlaşamadık!", 1.5f).OnComplete(() => acceptanceText.DOFade(0f, .2f));
@@ -160,6 +167,7 @@ public class MissionCompleted : MonoBehaviour
         pickAndDrop.GetComponent<PlayerMovement>().enabled = true;
         SaleInteract.IsSaleNow = false;
         DOVirtual.DelayedCall(1.5f, () => SaleInteract.Instance.enabled = true);
+        offerInputField.onEndEdit.RemoveAllListeners();
     }
 
     public void AnotherOfferDecline()
@@ -167,6 +175,7 @@ public class MissionCompleted : MonoBehaviour
         StartCoroutine(AnotherOfferDelay(npcTradeDeclineDelay));
         ClosePanelWithFade(anotherOfferPanel);
         WantToSellDeclineButton();
+        offerInputField.onEndEdit.RemoveAllListeners();
         //DOVirtual.DelayedCall(1.5f, () => SaleInteract.Instance.enabled = true);
     }
 
@@ -189,7 +198,11 @@ public class MissionCompleted : MonoBehaviour
             pickAndDrop.enabled = true;
             PlayerMoneyManager.Instance.AddMoney(offerPrice);
             //TODO: collider.enabled = false;
-            behindNpcCollider.enabled = true;
+            if (behindNpcCollider != null)
+            {
+                behindNpcCollider.enabled = true;
+            }
+
             pickAndDrop.CloseAllInteractionPanels();
             SaleInteract.Instance.SetSaleInteractPanelActive(false);
             SaleInteract.Instance.enabled = true;
@@ -238,10 +251,9 @@ public class MissionCompleted : MonoBehaviour
     {
         if (pickAndDrop != null)
         {
-            SaleInteract.Instance.enabled = false;
-            SaleInteract.Instance.SetSaleInteractPanelActive(false);
-            pickAndDrop.enabled = false;
-            AudioManager.Instance.Stop("Walk");
+            Debug.Log(
+                $"Interact called for Instance ID: {this.GetInstanceID()} with requiredObjectType: {requiredObjectType} and npcPrice: {npcPrice}");
+
             if (requiredObjectType == pickAndDrop.inHandObjType)
             {
                 // offerInputField.onEndEdit.AddListener(delegate { this.SubmitOffer(); });
@@ -252,8 +264,16 @@ public class MissionCompleted : MonoBehaviour
                 //player.GetComponent<PlayerMovement>().enabled = false;
                 mouseLook.enabled = false;
             }
-            else
+
+            SaleInteract.Instance.enabled = false;
+            SaleInteract.Instance.SetSaleInteractPanelActive(false);
+            pickAndDrop.enabled = false;
+            AudioManager.Instance.Stop("Walk");
+
+            if (requiredObjectType != pickAndDrop.inHandObjType)
+            {
                 StartCoroutine(AnotherOffer());
+            }
         }
         else
         {
@@ -273,23 +293,23 @@ public class MissionCompleted : MonoBehaviour
     }
 
 
-/*
-    private void OnTriggerExit(Collider other)
-    {
-        if (player != null)
+    /*
+        private void OnTriggerExit(Collider other)
         {
-            ClosePanelWithFade(wantToSellPanel, 1.5f);
-            ClosePanelWithFade(offerInputField.gameObject, 1.5f);
-            player.enabled = true;
-            mouseLook.HideCursor();
-            player.GetComponent<PlayerMovement>().enabled = true;
-            mouseLook.enabled = true;
-            //offerInputField.onEndEdit.RemoveAllListeners();
+            if (player != null)
+            {
+                ClosePanelWithFade(wantToSellPanel, 1.5f);
+                ClosePanelWithFade(offerInputField.gameObject, 1.5f);
+                player.enabled = true;
+                mouseLook.HideCursor();
+                player.GetComponent<PlayerMovement>().enabled = true;
+                mouseLook.enabled = true;
+                //offerInputField.onEndEdit.RemoveAllListeners();
 
-            acceptanceText.text = "";
+                acceptanceText.text = "";
+            }
         }
-    }
-*/
+    */
     public void CompletedMission(PlayerPickAndDrop player)
     {
         if (player != null && player.currentObjectGrabbling != null)

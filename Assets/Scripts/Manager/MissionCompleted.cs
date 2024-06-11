@@ -7,12 +7,13 @@ using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using DG.Tweening;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class MissionCompleted : MonoBehaviour
 {
     public ObjectType requiredObjectType;
-    public PlayerPickAndDrop player;
+    public PlayerPickAndDrop pickAndDrop;
     public int missionID;
     public bool missionCompleted = false;
     public int requiredObjectCount;
@@ -84,14 +85,16 @@ public class MissionCompleted : MonoBehaviour
         {
             if (submitOfferPrice > npcPrice * 2)
             {
+                acceptanceText.DOFade(1, .2f);
                 acceptanceText.text = "Degerinden fazla girdin!";
+                acceptanceText.DOFade(0, 1f).SetDelay(.5f);
                 return;
             }
 
             float acceptanceProbability = 0f;
             var random = Random.value;
 
-            if (player != null && player.inHandObjType == requiredObjectType)
+            if (pickAndDrop != null && pickAndDrop.inHandObjType == requiredObjectType)
                 acceptanceProbability = CalculateAcceptanceProbability(submitOfferPrice);
 
             Debug.Log($"acceptanceProbability {acceptanceProbability}");
@@ -99,21 +102,25 @@ public class MissionCompleted : MonoBehaviour
             if (random < acceptanceProbability)
             {
                 objectCount++;
-                CompletedMission(player);
+                CompletedMission(pickAndDrop);
                 mouseLook.enabled = true;
                 mouseLook.HideCursor();
-                player.GetComponent<PlayerMovement>().enabled = true;
-                collider.enabled = false;
+                pickAndDrop.GetComponent<PlayerMovement>().enabled = true;
+                // TODO : collider.enabled = false;
                 behindNpcCollider.enabled = true;
                 //acceptanceText.text = "Anlastik!";
                 AudioManager.Instance.PlayOneShot("Offer Yes");
+                PlayerMoneyManager.Instance.AddMoney((int)submitOfferPrice);
+                SaleInteract.Instance.SetSaleInteractPanelActive(false);
+                SaleInteract.Instance.enabled = false;
                 NpcAcceptedOfferPanelAnim();
-                player.CloseAllInteractionPanels();
-                ClosePanelWithFade(offerInputField.gameObject, .7f);
+                pickAndDrop.CloseAllInteractionPanels();
+                ClosePanelWithFade(offerInputField.transform.parent.gameObject);
             }
             else
             {
-                Camera.main.DOShakeRotation(.7f);
+                acceptanceText.text = string.Empty;
+                Camera.main.DOShakeRotation(.2f,10,10,90);
                 AudioManager.Instance.PlayOneShot("Offer No");
                 acceptanceText.DOFade(1f, .2f);
                 acceptanceText.DOText("Anlaşamadık!", 1.5f).OnComplete(() => acceptanceText.DOFade(0f, .2f));
@@ -129,25 +136,28 @@ public class MissionCompleted : MonoBehaviour
     {
         npcAcceptedOfferPanel.SetActive(true);
         DOVirtual.DelayedCall(1.5f, () => npcAcceptedOfferPanel.SetActive(false));
+        SaleInteract.Instance.SetSaleInteractPanelActive(false);
+        SaleInteract.Instance.enabled = true;
     }
 
     public void WantToSellAcceptButton()
     {
-        ClosePanelWithFade(wantToSellPanel, 1.5f);
+        ClosePanelWithFade(wantToSellPanel);
         OpenPanelWithFade(offerInputField.transform.parent.gameObject);
         mouseLook.ShowCursor();
         mouseLook.enabled = false;
         // player.GetComponent<PlayerMovement>().enabled = false;
-        player.enabled = false;
+        pickAndDrop.enabled = false;
+        SaleInteract.Instance.enabled = false;
     }
 
     public void WantToSellDeclineButton()
     {
-        ClosePanelWithFade(wantToSellPanel, 1.5f);
+        ClosePanelWithFade(wantToSellPanel);
         mouseLook.enabled = true;
         mouseLook.HideCursor();
-        player.enabled = true;
-        player.GetComponent<PlayerMovement>().enabled = true;
+        pickAndDrop.enabled = true;
+        pickAndDrop.GetComponent<PlayerMovement>().enabled = true;
         SaleInteract.IsSaleNow = false;
         DOVirtual.DelayedCall(1.5f, () => SaleInteract.Instance.enabled = true);
     }
@@ -155,7 +165,7 @@ public class MissionCompleted : MonoBehaviour
     public void AnotherOfferDecline()
     {
         StartCoroutine(AnotherOfferDelay(npcTradeDeclineDelay));
-        ClosePanelWithFade(anotherOfferPanel, .5f);
+        ClosePanelWithFade(anotherOfferPanel);
         WantToSellDeclineButton();
         //DOVirtual.DelayedCall(1.5f, () => SaleInteract.Instance.enabled = true);
     }
@@ -163,29 +173,32 @@ public class MissionCompleted : MonoBehaviour
 
     public void AnotherOfferAccept()
     {
-        if (player.inHandObjType != ObjectType.Hicbirsey && player.currentObjectGrabbling != null)
+        if (pickAndDrop.inHandObjType != ObjectType.Hicbirsey && pickAndDrop.currentObjectGrabbling != null)
         {
-            var obj = player.currentObjectGrabbling.gameObject;
+            var obj = pickAndDrop.currentObjectGrabbling.gameObject;
             obj.transform.DOShakeScale(.45f, 10f, 10, 90, true)
                 .OnComplete((() => Destroy(obj)));
             AudioManager.Instance.PlayOneShot("Another Offer");
-            player.inHandObjType = ObjectType.Hicbirsey;
-            player.InHand = false;
-            player.currentObjectGrabbling = null;
-            ClosePanelWithFade(anotherOfferPanel, .5f);
+            pickAndDrop.inHandObjType = ObjectType.Hicbirsey;
+            pickAndDrop.InHand = false;
+            pickAndDrop.currentObjectGrabbling = null;
+            ClosePanelWithFade(anotherOfferPanel);
             mouseLook.enabled = true;
             mouseLook.HideCursor();
-            player.GetComponent<PlayerMovement>().enabled = true;
+            pickAndDrop.GetComponent<PlayerMovement>().enabled = true;
+            pickAndDrop.enabled = true;
             PlayerMoneyManager.Instance.AddMoney(offerPrice);
-            collider.enabled = false;
+            //TODO: collider.enabled = false;
             behindNpcCollider.enabled = true;
-            player.CloseAllInteractionPanels();
+            pickAndDrop.CloseAllInteractionPanels();
+            SaleInteract.Instance.SetSaleInteractPanelActive(false);
+            SaleInteract.Instance.enabled = true;
         }
     }
 
     public IEnumerator AnotherOffer(float offerDuration = 1f)
     {
-        if (!player.InHand)
+        if (!pickAndDrop.InHand)
         {
             acceptanceText.text = "You have no object in your hand!";
             yield break;
@@ -194,11 +207,12 @@ public class MissionCompleted : MonoBehaviour
         if (!canItSell) yield break;
         offerPrice = (int)Random.Range(minAnotherOfferPrice, maxAnotherOfferPrice);
         anotherOfferInfoText.text =
-            $"Senin urunun {requiredObjectType} degil! Sana {offerPrice} $ kadar teklifim var, kabul eder misin?";
+            $"Senin urunun {requiredObjectType} degil! Sana {offerPrice} $ kadar teklifim var, kabul eder misin?" +
+            $"(3 defa red cevabi verirsen 20 saniye sonra tekrar teklif yaparim)";
 
         OpenPanelWithFade(anotherOfferPanel);
         mouseLook.enabled = false;
-        player.GetComponent<PlayerMovement>().enabled = false;
+        pickAndDrop.GetComponent<PlayerMovement>().enabled = false;
     }
 
 
@@ -222,10 +236,13 @@ public class MissionCompleted : MonoBehaviour
 
     public void Interact()
     {
-        if (player != null)
+        if (pickAndDrop != null)
         {
-            player.enabled = false;
-            if (requiredObjectType == player.inHandObjType)
+            SaleInteract.Instance.enabled = false;
+            SaleInteract.Instance.SetSaleInteractPanelActive(false);
+            pickAndDrop.enabled = false;
+            AudioManager.Instance.Stop("Walk");
+            if (requiredObjectType == pickAndDrop.inHandObjType)
             {
                 // offerInputField.onEndEdit.AddListener(delegate { this.SubmitOffer(); });
                 offerInputField.text = "";
@@ -250,10 +267,9 @@ public class MissionCompleted : MonoBehaviour
         panel.SetActive(true);
     }
 
-    private void ClosePanelWithFade(GameObject panel, float duration)
+    private void ClosePanelWithFade(GameObject panel)
     {
-        panel.transform.DOScale(Vector3.zero, duration).From(Vector3.one)
-            .OnComplete(() => panel.SetActive(false));
+        panel.SetActive(false);
     }
 
 

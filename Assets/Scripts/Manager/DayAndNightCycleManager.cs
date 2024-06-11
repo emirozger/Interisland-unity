@@ -16,7 +16,7 @@ public class DayAndNightCycleManager : MonoBehaviour
     [SerializeField] private Color nightAmbientLight;
     [SerializeField] private AnimationCurve lightChangeCurve;
     [SerializeField] private float maxSunLightIntensity = 1f;
-   // [SerializeField] private Light moonLight;
+    [SerializeField] private Light moonLight;
     [SerializeField] private float maxMoonLightIntensity = 1f;
 
     private DateTime currentTime;
@@ -86,7 +86,7 @@ public class DayAndNightCycleManager : MonoBehaviour
     {
         float dotProduct = Vector3.Dot(sunLight.transform.forward, Vector3.down);
         sunLight.intensity = Mathf.Lerp(0, maxSunLightIntensity, lightChangeCurve.Evaluate(dotProduct));
-        //moonLight.intensity = Mathf.Lerp(maxMoonLightIntensity, 0, lightChangeCurve.Evaluate(dotProduct));
+        moonLight.intensity = Mathf.Lerp(maxMoonLightIntensity, 0, lightChangeCurve.Evaluate(dotProduct));
         RenderSettings.ambientLight = Color.Lerp(nightAmbientLight, dayAmbientLight, lightChangeCurve.Evaluate(dotProduct));
         RenderSettings.ambientIntensity = Mathf.Lerp(nightAmbientLight.maxColorComponent, dayAmbientLight.maxColorComponent, lightChangeCurve.Evaluate(dotProduct));
     }

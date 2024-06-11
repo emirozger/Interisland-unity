@@ -11,6 +11,8 @@ TagManager:
   - NPC
   - Placeable
   - Climb
+  - Drum
+  - Gong
   layers:
   - Default
   - TransparentFX

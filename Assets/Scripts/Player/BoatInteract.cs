@@ -97,7 +97,7 @@ public class BoatInteract : MonoBehaviour
                 if (Input.GetKeyDown(cameraSwitchKeys[i]))
                 {
                     SwitchCameraPosition(i);
-                    break; // Bir tuş basıldığında döngüyü sonlandır
+                    break;
                 }
             }
         }
@@ -116,7 +116,7 @@ public class BoatInteract : MonoBehaviour
         if (Physics.Raycast(playerFpsCamera.transform.position, playerFpsCamera.transform.forward, out hit, 2f,
                 steerLayerMask))
         {
-            hit.collider.GetComponent<Highlight>()?.ToggleHighlight(true);
+           // hit.collider.GetComponent<Highlight>()?.ToggleHighlight(true);
             driveBoatInteractPanel.SetActive(true);
             print(hit.collider.name);
             isLookingSteer = true;

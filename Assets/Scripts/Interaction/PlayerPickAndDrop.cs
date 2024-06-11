@@ -8,15 +8,15 @@ public class PlayerPickAndDrop : MonoBehaviour
     public ObjectType inHandObjType;
     public GameObject objectToHand;
 
-    [Header("Interaction Settings")]
-    
-    [SerializeField] private GameObject grabInteractionPanel;
+    [Header("Interaction Settings")] [SerializeField]
+    private GameObject grabInteractionPanel;
+
     [SerializeField] private GameObject placeInteractionPanel;
     [SerializeField] private GameObject rotateInteractionPanel;
     [SerializeField] private GameObject areaFullPanel;
+    [SerializeField] private GameObject sfxPlayPanel;
 
-    [Space(30)]
-    [SerializeField] private LayerMask pickableLayer;
+    [Space(30)] [SerializeField] private LayerMask pickableLayer;
     [SerializeField] private LayerMask placeableLayer;
 
     [SerializeField] public Transform objectGrabPointTransform;
@@ -32,13 +32,44 @@ public class PlayerPickAndDrop : MonoBehaviour
         get { return inHand; }
         set { inHand = value; }
     }
-    
+
     private void Awake() => Instance = this;
 
     private void Start() => cameraMain = Camera.main.transform;
 
     private void Update()
     {
+            if (Physics.Raycast(cameraMain.transform.position, cameraMain.transform.forward, out RaycastHit sfxHit, 5f))
+            {
+                if (sfxHit.collider != null)
+                {
+                    if (sfxHit.collider.CompareTag("Drum"))
+                    {
+                        sfxPlayPanel.SetActive(true);
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            AudioManager.Instance.PlayWithRandomPitch("Drum", 0.5f, 1.5f);
+                            sfxPlayPanel.SetActive(false);
+                        }
+                    }
+
+                    if (sfxHit.collider.CompareTag("Gong"))
+                    {
+                        sfxPlayPanel.SetActive(true);
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            AudioManager.Instance.PlayWithRandomPitch("Gong", .6f, 1f);
+                            sfxPlayPanel.SetActive(false);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                sfxPlayPanel.SetActive(false);
+            }
+
+
         if (hit.collider != null)
             CloseInteractVisual();
 
@@ -75,7 +106,6 @@ public class PlayerPickAndDrop : MonoBehaviour
                         rotateInteractionPanel.SetActive(false);
                     }
                 }
-                  
             }
 
             return; // elimde obje varsa pickable objeye hit atmasın.
@@ -103,6 +133,7 @@ public class PlayerPickAndDrop : MonoBehaviour
         rotateInteractionPanel.SetActive(false);
         areaFullPanel.SetActive(false);
     }
+
     private void CloseInteractVisual()
     {
         hit.collider?.GetComponent<Highlight>()?.ToggleHighlight(false);
@@ -118,6 +149,7 @@ public class PlayerPickAndDrop : MonoBehaviour
         grabInteractionPanel.SetActive(true);
         placeInteractionPanel.SetActive(false);
     }
+
     private void OpenPlaceVisual()
     {
         hit.collider?.GetComponent<Highlight>()?.ToggleHighlight(true);

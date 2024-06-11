@@ -56,15 +56,15 @@ public class SaleInteract : MonoBehaviour
         {
             var missionCompleted = colliders[0].GetComponent<MissionCompleted>();
 
-            if (missionCompleted != null && isSaleNow == false)
+            if (missionCompleted != null)
             {
                 saleInteractPanel.SetActive(true);
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     playerMovement.enabled = false;
-                    isSaleNow = true;
                     saleInteractPanel.SetActive(false);
                     missionCompleted.Interact();
+                    this.enabled = false;
                 }
             }
         }

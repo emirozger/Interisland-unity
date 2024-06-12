@@ -21,7 +21,6 @@ public class DialogueTrigger : MonoBehaviour
     public bool hasSpoken = false;
     public float blinkDuration = 0.5f;
     public float blinkInterval = .5f;
-    private Sequence blinkSequence;
 
     private void Start()
     {
@@ -51,13 +50,13 @@ public class DialogueTrigger : MonoBehaviour
             .SetLoops(-1);
     }
 
-    public void StopBlinking()
+    public void StopBlinking(TMP_Text text)
     {
-        if (blinkSequence != null)
-        {
-            blinkSequence.Kill();
-        }
+            text.DOKill();
+            text.color = Color.white;
     }
+    
+    
 
     /*
     private void OnTriggerEnter(Collider other)
@@ -80,6 +79,7 @@ public class DialogueTrigger : MonoBehaviour
     {
         MissionManager.Instance.missions[missionID - 1].missionDescription = description;
         toggleText.text = description;
+        MissionManager.Instance.ToggleMissionPanel(true, description);
     }
 }
 

@@ -21,10 +21,20 @@ public class SaleableObjects : MonoBehaviour, IInteractable
         playerMoneyManager = FindObjectOfType<PlayerMoneyManager>();
     }
 
+    public int Price => objectPrice;
+
     public void OnInteract()
     {
         if (PlayerPickAndDrop.Instance.InHand)
             return;
+        
+        if (playerMoneyManager.GetMoney < objectPrice)
+        {
+           playerMoneyManager.InitialEnoughCoinText(playerMoneyManager.enoughCoinText);
+           AudioManager.Instance.PlayOneShot("Offer No");
+           return;
+        }
+        
         switch (objectType)
         {
             case ObjectType.Hicbirsey:

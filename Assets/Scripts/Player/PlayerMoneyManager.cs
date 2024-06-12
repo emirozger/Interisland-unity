@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,9 +12,17 @@ public class PlayerMoneyManager : MonoBehaviour
     private int money = 0;
     [SerializeField] private TextMeshProUGUI playerMoneyText;
     [SerializeField] private TextMeshProUGUI areaText;
+    public TextMeshProUGUI enoughCoinText;
 
     private int totalArea = 4;
     private int placedArea = 0;
+
+    public void InitialEnoughCoinText(TextMeshProUGUI text)
+    {
+        text.DOFade(1f, .5f)
+            .OnComplete((() => text.DOFade(0f, .5f)
+                .SetDelay(.7f)));
+    }
 
     public int GetPlacedArea
     {
@@ -35,7 +44,11 @@ public class PlayerMoneyManager : MonoBehaviour
 
     public int SubtractMoney(int amount)
     {
-        if (GetMoney < amount) return 0;
+        if (GetMoney < amount)
+        {
+            return 0;
+        }
+
         GetMoney -= amount;
         AudioManager.Instance.PlayOneShot("Substract Coin");
         return GetMoney;
@@ -67,6 +80,7 @@ public class PlayerMoneyManager : MonoBehaviour
         {
             AddMoney(10);
         }
+
         if (Input.GetKeyDown(KeyCode.H))
         {
             SubtractMoney(10);

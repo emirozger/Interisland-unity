@@ -30,10 +30,9 @@ public class MissionManager : MonoBehaviour
         }
     }
 
-    private void ToggleMissionPanel(bool activate, string description)
+    public void ToggleMissionPanel(bool activate, string description)
     {
-        mission1.transform.DOMoveX(activate ? 150 : -150, 1f).SetDelay(.35f).SetEase(Ease.InOutBack)
-            .OnComplete(() => mission1.gameObject.SetActive(activate));
+        mission1.transform.DOMoveX(activate ? 225 : -150, 1f).SetDelay(.35f).SetEase(Ease.InOutBack);
         mission1.isOn = activate;
         mission1.transform.GetChild(1).GetComponent<Text>().text = description;
     }

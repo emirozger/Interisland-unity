@@ -1,16 +1,18 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class SaleInteract : MonoBehaviour
 {
     public static SaleInteract Instance;
 
-    [Header("Buy Interact Settings")] private Camera cameraMain;
+    [Header("Buy Interact Settings")]
+    private Camera cameraMain;
     private RaycastHit hit;
     private const float RAY_DISTANCE = 5f;
     [SerializeField] private LayerMask InteractableLayer;
     [SerializeField] private GameObject buyInteractPanel;
-
+    [SerializeField] private TMP_Text currentObjPriceText;
 
     [Header("Sale Interact Settings")]
     [SerializeField] private PlayerMovement playerMovement;
@@ -38,11 +40,12 @@ public class SaleInteract : MonoBehaviour
     {
         saleInteractPanel.SetActive(isActive);
     }
+
     void Update()
     {
         if (UIAnimationController.Instance.IsGamePaused)
             return;
-        
+
         BuyInteractFunc();
         if (PlayerPickAndDrop.Instance.InHand == false)
         {
@@ -59,7 +62,7 @@ public class SaleInteract : MonoBehaviour
             saleInteractableLayer);
         if (numFound > 0)
         {
-            currentNPC = colliders[0].GetComponent<MissionCompleted>(); // NPC'ye eri�im sa�lay�n
+            currentNPC = colliders[0].GetComponent<MissionCompleted>();
 
             if (currentNPC != null)
             {
@@ -81,7 +84,6 @@ public class SaleInteract : MonoBehaviour
         }
     }
 
-
     private void BuyInteractFunc()
     {
         if (hit.collider != null)
@@ -97,12 +99,21 @@ public class SaleInteract : MonoBehaviour
             hit.collider.GetComponent<Highlight>().ToggleHighlight(true);
             buyInteractPanel.SetActive(true);
 
+            // Display the price of the object
+            if (hit.collider.TryGetComponent(out SaleableObjects saleableObject))
+            {
+                currentObjPriceText.text = $"{saleableObject.Price}$";
+            }
+
             if (Input.GetKeyDown(KeyCode.E))
             {
                 saleInteract?.OnInteract();
                 buyInteractPanel.SetActive(false);
-               
             }
+        }
+        else
+        {
+            currentObjPriceText.text = "";
         }
     }
 

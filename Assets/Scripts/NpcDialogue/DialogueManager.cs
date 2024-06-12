@@ -59,14 +59,14 @@ public class DialogueManager : MonoBehaviour
             var dialogueTrigger = hit.collider.GetComponent<DialogueTrigger>();
             if (Input.GetKeyDown(KeyCode.Space) && dialogueTrigger != null && dialogueTrigger.hasSpoken)
                 isSpacePressed = true;
-            if (dialogueTrigger.hasSpoken) return;
+            //TODO : 13.06.2024 00:43 if (dialogueTrigger.hasSpoken) return;
             OpenInteractVisuals();
             if (!Input.GetKeyDown(KeyCode.E)) return;
             CloseInteractVisuals();
             DialogueStart(dialogueTrigger.dialogueStrings, dialogueTrigger.npcTransform); //++
             dialogueTrigger.hasSpoken = true; //++
             dialogueTrigger.animator.SetTrigger("Talking"); //++
-            instantiateTransform = dialogueTrigger.transform; //++
+            instantiateTransform = dialogueTrigger.transform.GetChild(4); //++
         }
     }
 
@@ -89,10 +89,9 @@ public class DialogueManager : MonoBehaviour
 
     public void InstantiateObj(GameObject obj)
     {
-        var newPos = new Vector3(instantiateTransform.position.x, instantiateTransform.position.y + .5f,
-            instantiateTransform.position.z - 4f);
-        Instantiate(obj, newPos, Quaternion.identity);
+        Instantiate(obj, instantiateTransform.position, Quaternion.Euler(-90,0,0));
     }
+    
 
     public void CameraShake()
     {

@@ -25,7 +25,8 @@ public class BoatController : MonoBehaviour
     public int vibrato = 10;
     [SerializeField] private BoatInteract boatInteract;
     public Transform anchorSteer;
- 
+
+    private bool isSteeringSoundPlaying;
 
     private void Awake()
     {
@@ -35,16 +36,19 @@ public class BoatController : MonoBehaviour
 
     void Start()
     {
-     //   rb = GetComponent<Rigidbody>();
+        //   rb = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
+        if (UIAnimationController.Instance.IsGamePaused)
+            return;
+        
         Movement();
         AnchorBoat();
         Steer();
     }
-    
+
     void AnchorBoat()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -55,7 +59,7 @@ public class BoatController : MonoBehaviour
                 {
                     AudioManager.Instance.PlayOneShot("Anchor Drop");
                     var rotateGoal = new Vector3(0, 0, 90);
-                    anchorSteer.DOLocalRotate(rotateGoal, 4f).OnComplete(()=>
+                    anchorSteer.DOLocalRotate(rotateGoal, 4f).OnComplete(() =>
                     {
                         if (movementFactor > 0.0f)
                         {
@@ -65,15 +69,11 @@ public class BoatController : MonoBehaviour
                         var anchorPoint = this.transform.position;
                         float currentSpeed = rb.velocity.magnitude;
                         float shakeStrength = currentSpeed < 4f ? strength : (currentSpeed < 6f ? strength * 3f : strength * 5f);
-                        
-                       
-                        rb.AddForceAtPosition(Vector3.down * anchoredForce, anchorPoint, ForceMode.Acceleration);
-                        playerCamera.DOShakeRotation(1f,shakeStrength,vibrato,randomness);
-                        boatIsAnchored = true;
 
+                        rb.AddForceAtPosition(Vector3.down * anchoredForce, anchorPoint, ForceMode.Acceleration);
+                        playerCamera.DOShakeRotation(1f, shakeStrength, vibrato, randomness);
+                        boatIsAnchored = true;
                     });
-                    
-              
                 }
             }
         }
@@ -81,17 +81,14 @@ public class BoatController : MonoBehaviour
 
     void Movement()
     {
-        
         if (!boatIsAnchored)
         {
-            //TODO : PLAYER BOTTA DEGİLSE RETURN
             if (boatInteract.isDriving)
             {
                 vertical = Input.GetKey(KeyCode.W) ? 1 : 0;
             }
         }
 
-        
         movementFactor = Mathf.Lerp(movementFactor, vertical, Time.deltaTime / movementThresold);
         rb.AddForce(transform.forward * movementFactor * speed, ForceMode.Acceleration);
         // Speed limit
@@ -104,7 +101,7 @@ public class BoatController : MonoBehaviour
     void Steer()
     {
         if (!boatInteract.isDriving) return;
-        
+
         if (!boatIsAnchored)
         {
             horizontalInput = Input.GetAxis("Horizontal");
@@ -114,5 +111,22 @@ public class BoatController : MonoBehaviour
         steerFactor = Mathf.Clamp(steerFactor, -0.5f, 0.5f);
         steerTransform.localRotation = Quaternion.Euler(0.0f, 0.0f, steerFactor * Mathf.Pow(steerSpeed, 2));
         transform.Rotate(0.0f, steerFactor * boatRotateSpeed, 0.0f);
+        
+        if ((steerFactor > 0.01f && steerFactor < 0.47f) || (steerFactor < -0.01f && steerFactor > -0.47f))
+        {
+            if (!isSteeringSoundPlaying)
+            {
+                AudioManager.Instance.Play("SteerSFX");
+                isSteeringSoundPlaying = true;
+            }
+        }
+        else
+        {
+            if (isSteeringSoundPlaying)
+            {
+                AudioManager.Instance.Stop("SteerSFX");
+                isSteeringSoundPlaying = false;
+            }
+        }
     }
 }

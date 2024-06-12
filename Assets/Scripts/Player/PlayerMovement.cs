@@ -68,6 +68,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (UIAnimationController.Instance.IsGamePaused)
+             return;
+        
         if (hit.collider != null)
         {
             climbInteractPanel.SetActive(false);

@@ -1,25 +1,23 @@
+using System;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
-using System.Collections;
-
-
+using Random = UnityEngine.Random;
 
 public class UIAnimationController : MonoBehaviour
 {
-
-    [Header("Settings")] public LoopType loopRidderFlipper;
-    public LoopType GoldFrameLoop;
-    public float pauseBGFillEnd, pauseBG2FillEnd;
-    public float pauseBGFillEndTime, pauseBG2FillEndTime;
+    public static UIAnimationController Instance;
+    [Header("Settings")]
+    public LoopType loopRidderFlipper;
+    public float pauseBGFillEnd;
+    public float pauseBGFillEndTime;
     public float fillSpeed = 1f;
-    public float holdDurationForMaxFill = 3f;
 
-    [Header("References")] [SerializeField]
-    private Transform shipTeleportTransform;
-
+    private DialogueManager dialogueManager;
+    [Header("References")] 
+    [SerializeField] private Transform shipTeleportTransform;
     public Image ridder;
     public Image[] PauseBG;
     public GameObject PausePanel;
@@ -27,7 +25,6 @@ public class UIAnimationController : MonoBehaviour
     public Transform InventoryImage;
     public Button InventoryButton;
     public Transform QuestImage;
-    public Button QuestButton;
     public Image backToShipImage;
     public Image AnimRidder;
     public Image AnimPaper;
@@ -41,37 +38,39 @@ public class UIAnimationController : MonoBehaviour
     public Image SoundSlider0;
     public Image SoundSlider1;
 
-    [Header("Ease Settings")] public Ease RidderAnimEase;
+    [Header("Ease Settings")] 
+    
     public Ease ridderEase;
-    public Ease FireworksEase;
     public Ease NewIslandEase;
     public Ease ScreenUIEase;
-    public Ease AnimPanelEase;
     public Ease PauseButtonsEase;
 
     private bool isFilling;
     private float holdStartTime;
+    
     private bool isGamePaused = false;
 
     private Tween inventoryTween;
     private Tween questTween;
+    
+    public bool IsGamePaused => isGamePaused;
 
+    private void Awake()
+    {
+        Instance = this;
+        dialogueManager = FindObjectOfType<DialogueManager>();
+    }
 
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            NewIslandAnim();
-        }
+        
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-
-
-            if (isGamePaused)
-                ClosePauseMenu();
-            else
+            if (!isGamePaused)
                 OpenPauseMenu();
+            else
+                ClosePauseMenu();
+            
         }
 
         if (Input.GetKeyDown(KeyCode.I))
@@ -95,6 +94,11 @@ public class UIAnimationController : MonoBehaviour
     [SerializeField] private CameraController mouseLook;
     public void OpenPauseMenu()
     {
+        if (dialogueManager.isSpokeNow)
+        {
+            return;
+        }
+        AudioManager.Instance.Stop("Walk");
         mouseLook.enabled = false;
         mouseLook.ShowCursor();
         blackImage.DOFade(.85f, 0.01f);
@@ -121,12 +125,12 @@ public class UIAnimationController : MonoBehaviour
 
         ShowSlider();
         isGamePaused = true;
-        
     }
 
 
     public void ClosePauseMenu()
     {
+       
         mouseLook.enabled = true;
         mouseLook.HideCursor();
         blackImage.DOFade(0f, .01f);
@@ -139,6 +143,7 @@ public class UIAnimationController : MonoBehaviour
 
     public void NewIslandAnim()
     {
+        AudioManager.Instance.PlayOneShot("NewIslandSFX");
         newIslandAnimPanel.SetActive(true);
         AnimRidder.transform.DORotate(new Vector3(0, 0, -180), 3);
         AnimRidder.rectTransform.DOScale(Vector3.one, 1f).From(Vector3.zero);
@@ -158,14 +163,13 @@ public class UIAnimationController : MonoBehaviour
         AnimText.DOFade(1, 1).From(0);
         NewIslandName.DOFade(1, 2).From(0);
         NewIslandName.rectTransform.DOScale(Vector3.one, 1f).From(2.2f).SetEase(NewIslandEase);
-        newIslandAnimPanel.transform.DOScale(0f, 1f).SetDelay(3f);
+        //newIslandAnimPanel.transform.DOScale(0f, 1f).SetDelay(3f);
 
-        DOVirtual.DelayedCall(3f, () => 
+        DOVirtual.DelayedCall(3f, () =>
         {
-            //newIslandAnimPanel.transform.DOScale(0f, 1f);
-           // .OnComplete(() => newIslandAnimPanel.SetActive(false));
+            newIslandAnimPanel.transform.DOShakeScale(.2f, .25f, 8, 30f, true)
+            .OnComplete(() => newIslandAnimPanel.SetActive(false));
             //.OnComplete(() => newIslandAnimPanel.transform.DOScale(1f, 1f));
-      
         });
     }
 
@@ -210,13 +214,11 @@ public class UIAnimationController : MonoBehaviour
     private void BackToShip()
     {
         backToShipImage.fillAmount = 0f;
-
-        // Holding 'P' key
+        
         if (Input.GetKey(KeyCode.P))
         {
             isFilling = true;
         }
-        // Releasing 'P' key
         else if (Input.GetKeyUp(KeyCode.P))
         {
             isFilling = false;
@@ -227,8 +229,8 @@ public class UIAnimationController : MonoBehaviour
             fillStartTime += Time.deltaTime;
             print(fillStartTime);
 
-            backToShipImage.DOFillAmount(1f, 1f);
-            if (fillStartTime >= 1f)
+            backToShipImage.DOFillAmount(1f, fillSpeed);
+            if (fillStartTime >= 8f)
             {
                 PlayerMovement.Instance.TeleportToShip(shipTeleportTransform);
                 backToShipImage.fillAmount = 0f;
@@ -238,7 +240,7 @@ public class UIAnimationController : MonoBehaviour
         else
         {
             fillStartTime = 0f;
-            backToShipImage.DOFillAmount(0f, fillSpeed);
+            backToShipImage.DOFillAmount(0f, fillSpeed/2);
         }
     }
 

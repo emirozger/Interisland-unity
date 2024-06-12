@@ -1,12 +1,14 @@
 using System;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI; // Slider kullanımı için UI kütüphanesini ekleyin
 using Random = UnityEngine.Random;
 
 public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
     public static AudioManager Instance;
+    [SerializeField] private Slider volumeSlider;
 
     private void Awake()
     {
@@ -28,11 +30,14 @@ public class AudioManager : MonoBehaviour
             sound.audioSource.playOnAwake = false;
         }
     }
+
     private void Start()
     {
-       Play("Music");
+        Play("Music");
+        SetMusicVolume(0.35f);
+        volumeSlider.value = 0.35f;
     }
-    
+
     public void PlayOneShot(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
@@ -74,4 +79,19 @@ public class AudioManager : MonoBehaviour
         s.audioSource.Play();
     }
 
+    public void SetMusicVolume(float volume)
+    {
+        Sound musicSound = Array.Find(sounds, sound => sound.name == "Music");
+        if (musicSound != null)
+        {
+            musicSound.audioSource.volume = volume;
+        }
+    }
+    public void OnVolumeSliderChanged()
+    {
+        if (volumeSlider != null)
+        {
+            SetMusicVolume(volumeSlider.value);
+        }
+    }
 }

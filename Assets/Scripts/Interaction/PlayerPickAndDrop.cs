@@ -39,6 +39,9 @@ public class PlayerPickAndDrop : MonoBehaviour
 
     private void Update()
     {
+        if (UIAnimationController.Instance.IsGamePaused)
+            return;
+        
             if (Physics.Raycast(cameraMain.transform.position, cameraMain.transform.forward, out RaycastHit sfxHit, 5f))
             {
                 if (sfxHit.collider != null)

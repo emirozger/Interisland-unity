@@ -64,10 +64,13 @@ public class CameraController : MonoBehaviour
     {
         //if (!mouseLookEnabled) return;
 
+    
         Vector3 desiredPosition = target.position + offset;
         //Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed*Time.fixedDeltaTime);
         transform.position = desiredPosition;
         transform.LookAt(target);
+
+
         HandleMouseLook();
     }
 

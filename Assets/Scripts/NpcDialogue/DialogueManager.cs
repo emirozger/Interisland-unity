@@ -5,12 +5,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using Unity.Mathematics;
-using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 public class DialogueManager : MonoBehaviour
 {
+    
     [SerializeField] private GameObject dialogueParent;
     [SerializeField] private GameObject npcInteractPanel;
     [SerializeField] private TMP_Text dialogueText;
@@ -30,6 +28,8 @@ public class DialogueManager : MonoBehaviour
     public GameObject instantiatePrefab;
     public Transform instantiateTransform;
 
+    public bool isSpokeNow;
+
     private void Start()
     {
         dialogueParent.SetActive(false);
@@ -43,6 +43,9 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
+        if (UIAnimationController.Instance.IsGamePaused)
+            return;
+        
         if (hit.collider != null)
         {
             CloseInteractVisuals();
@@ -52,6 +55,7 @@ public class DialogueManager : MonoBehaviour
         {
             if (hit.collider == null) return;
             if (hit.collider.CompareTag("NPC") == false) return;
+           
             var dialogueTrigger = hit.collider.GetComponent<DialogueTrigger>();
             if (Input.GetKeyDown(KeyCode.Space) && dialogueTrigger != null && dialogueTrigger.hasSpoken)
                 isSpacePressed = true;
@@ -97,6 +101,8 @@ public class DialogueManager : MonoBehaviour
 
     public void DialogueStart(List<DialogueString> dialogueStrings, Transform npcTransform)
     {
+        isSpokeNow = true;
+        AudioManager.Instance.Stop("Walk");
         dialogueParent.SetActive(true);
         fpsController.enabled = false;
         mouseLook.enabled = false;
@@ -138,6 +144,7 @@ public class DialogueManager : MonoBehaviour
     {
         while (currentDialogueIndex < dialogueList.Count)
         {
+            
             AudioManager.Instance.PlayOneShot("NPC Talk");
             DialogueString line = dialogueList[currentDialogueIndex];
 
@@ -219,6 +226,7 @@ public class DialogueManager : MonoBehaviour
         playerCamera.transform.localRotation = Quaternion.Euler(0, 0, 0);
         fpsController.enabled = true;
         mouseLook.HideCursor();
+        isSpokeNow = false;
     }
 
     private IEnumerator TurnCameraTowardsNPC(Transform npcTransform)

@@ -40,6 +40,9 @@ public class SaleInteract : MonoBehaviour
     }
     void Update()
     {
+        if (UIAnimationController.Instance.IsGamePaused)
+            return;
+        
         BuyInteractFunc();
         if (PlayerPickAndDrop.Instance.InHand == false)
         {
@@ -56,7 +59,7 @@ public class SaleInteract : MonoBehaviour
             saleInteractableLayer);
         if (numFound > 0)
         {
-            currentNPC = colliders[0].GetComponent<MissionCompleted>(); // NPC'ye eriþim saðlayýn
+            currentNPC = colliders[0].GetComponent<MissionCompleted>(); // NPC'ye eriï¿½im saï¿½layï¿½n
 
             if (currentNPC != null)
             {
@@ -98,7 +101,7 @@ public class SaleInteract : MonoBehaviour
             {
                 saleInteract?.OnInteract();
                 buyInteractPanel.SetActive(false);
-                this.enabled = false;
+               
             }
         }
     }

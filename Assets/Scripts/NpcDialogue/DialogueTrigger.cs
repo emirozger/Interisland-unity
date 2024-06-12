@@ -19,18 +19,45 @@ public class DialogueTrigger : MonoBehaviour
     [Min(1)] public int missionID;
 
     public bool hasSpoken = false;
+    public float blinkDuration = 0.5f;
+    public float blinkInterval = .5f;
+    private Sequence blinkSequence;
 
     private void Start()
     {
         npcHighlight = GetComponent<Highlight>();
         npcNameText = GetComponentInChildren<TMP_Text>();
+        
+    }
+
+    private void Update()
+    {
+        if (UIAnimationController.Instance.IsGamePaused)
+            return;
         if (npcNameText != null)
         {
-            npcNameText.transform.DOMoveY(npcNameText.transform.localPosition.y + 2.5f, 1f).SetLoops(-1, LoopType.Yoyo)
-                .SetEase(Ease.InOutSine);
+            npcNameText.transform.rotation = Quaternion.Slerp(npcNameText.transform.rotation,Camera.main.transform.rotation,Time.deltaTime * 10);
         }
     }
 
+    public void StartBlinking(TMP_Text text)
+    {
+        text.color = Color.yellow;
+        DOTween.Sequence()
+            .Append(text.DOFade(0, blinkDuration))
+            .AppendInterval(blinkInterval)
+            .Append(text.DOFade(1, blinkDuration))
+            .AppendInterval(blinkInterval)
+            .SetLoops(-1);
+    }
+
+    public void StopBlinking()
+    {
+        if (blinkSequence != null)
+        {
+            blinkSequence.Kill();
+        }
+    }
 
     /*
     private void OnTriggerEnter(Collider other)

@@ -96,6 +96,7 @@ public class BoatInteract : MonoBehaviour
             {
                 if (Input.GetKeyDown(cameraSwitchKeys[i]))
                 {
+                    Debug.Log("switch cam to {i}");
                     SwitchCameraPosition(i);
                     break;
                 }
@@ -156,6 +157,7 @@ public class BoatInteract : MonoBehaviour
     }
     public void EnterDriveHandler()
     {
+        
         AudioManager.Instance.Stop("Walk");
         anchorInteractPanel.SetActive(true);
         driveBoatInteractPanel.SetActive(false);
@@ -175,7 +177,7 @@ public class BoatInteract : MonoBehaviour
         cameraRig.transform.parent = driveBoatCameraPositions[0];
         cameraRig.transform.localRotation = Quaternion.identity;
         cameraRig.transform.localPosition = Vector3.zero;
-        cameraRig.GetComponent<CameraController>().enabled = false;
+        //cameraRig.GetComponent<CameraController>().enabled = false;
         minimapController.SetPlayer(boatController.transform);
         isDriving = true;
     }

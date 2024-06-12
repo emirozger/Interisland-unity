@@ -42,10 +42,9 @@ public class DayAndNightCycleManager : MonoBehaviour
     private void UpdateTimeOfDay()
     {
         float deltaTime = Time.deltaTime;
-        // Güneşin batış ve doğuş arasındaki sürenin 3 katı hızında zaman geçmesi
         if (currentTime.TimeOfDay > sunsetTime || currentTime.TimeOfDay < sunriseTime)
         {
-            deltaTime *= timeMultiplier * 10f;
+            deltaTime *= timeMultiplier * 5f;
         }
         else
         {

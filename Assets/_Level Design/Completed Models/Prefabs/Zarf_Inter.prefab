@@ -13,11 +13,10 @@ GameObject:
   - component: {fileID: 6770932180906723415}
   - component: {fileID: 5347667560066780829}
   - component: {fileID: 5347667560066780831}
-  - component: {fileID: 5347667560066780826}
   - component: {fileID: 5347667560066780828}
   m_Layer: 7
   m_Name: Zarf_Inter
-  m_TagString: Untagged
+  m_TagString: Letter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -117,21 +116,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.0041435785, y: 0.007126167, z: 0.0002164484}
   m_Center: {x: 0, y: 8.653891e-20, z: 0.000042205273}
---- !u!114 &5347667560066780826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5113787357280823682}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f719e87fbadcd841b8588bf428ccb00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thisObjType: 7
-  objectGrabPointTransform: {fileID: 0}
-  wasPlaced: 0
 --- !u!114 &5347667560066780828
 MonoBehaviour:
   m_ObjectHideFlags: 0

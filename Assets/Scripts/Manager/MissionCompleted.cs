@@ -18,7 +18,7 @@ public class MissionCompleted : MonoBehaviour
     public bool missionCompleted = false;
     public int requiredObjectCount;
     public int objectCount;
-    [SerializeField] private GameObject anotherOfferPanel;
+    public GameObject anotherOfferPanel;
     [SerializeField] private TextMeshProUGUI anotherOfferInfoText;
     [SerializeField] private CameraController mouseLook;
     [SerializeField] private GameObject wantToSellPanel;

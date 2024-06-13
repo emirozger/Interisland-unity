@@ -13,6 +13,7 @@ TagManager:
   - Climb
   - Drum
   - Gong
+  - Letter
   layers:
   - Default
   - TransparentFX

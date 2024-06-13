@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SaleInteract : MonoBehaviour
 {
@@ -71,6 +72,7 @@ public class SaleInteract : MonoBehaviour
                 {
                     currentNPC.offerInputField.onEndEdit.RemoveAllListeners();
                     currentNPC.offerInputField.onEndEdit.AddListener(delegate { currentNPC.SubmitOffer(); });
+                    currentNPC.anotherOfferPanel.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(delegate { currentNPC.AnotherOfferAccept(); });
                     playerMovement.enabled = false;
                     saleInteractPanel.SetActive(false);
                     currentNPC.Interact();

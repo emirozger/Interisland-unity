@@ -61,6 +61,14 @@ public class UIAnimationController : MonoBehaviour
         dialogueManager = FindObjectOfType<DialogueManager>();
     }
 
+    private void Start()
+    {
+        if (backToShipImage == null)
+        {
+            backToShipImage = GameObject.Find("Back2Ship").GetComponent<Image>();
+        }
+    }
+
     private void Update()
     {
         
@@ -78,7 +86,7 @@ public class UIAnimationController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
             Quest();
-
+        
         BackToShip();
     }
 

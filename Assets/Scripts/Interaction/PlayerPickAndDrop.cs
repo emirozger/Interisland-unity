@@ -126,6 +126,17 @@ public class PlayerPickAndDrop : MonoBehaviour
                     rotateInteractionPanel.SetActive(true);
                 }
             }
+            else
+            {
+                if (hit.collider.CompareTag("Letter"))
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        Destroy(hit.collider.gameObject);
+                        CloseAllInteractionPanels();
+                    }
+                }
+            }
         }
     }
 

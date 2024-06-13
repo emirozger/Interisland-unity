@@ -38,6 +38,7 @@ public class PlayerMoneyManager : MonoBehaviour
     public int AddMoney(int amount)
     {
         GetMoney += amount;
+        playerMoneyText.text = money.ToString();
         AudioManager.Instance.PlayOneShot("Add Coin");
         return GetMoney;
     }
